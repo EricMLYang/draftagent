@@ -1,0 +1,59 @@
+{
+  "units": "mm",
+  "outline_mm": [
+    8000,
+    6000
+  ],
+  "wall_thickness": {
+    "exterior": 200,
+    "interior": 120
+  },
+  "print_scale": 100,
+  "n_rooms": 4,
+  "rooms": {
+    "客廳": "客廳",
+    "臥室": "臥室",
+    "廚房": "廚房",
+    "浴廁": "浴廁"
+  },
+  "area_targets_m2": {
+    "客廳": 14.0,
+    "臥室": 11.0,
+    "廚房": 12.0,
+    "浴廁": 4.0
+  },
+  "area_tol": 0.1,
+  "adjacency": [
+    {
+      "a": "客廳",
+      "b": "廚房",
+      "type": "door"
+    },
+    {
+      "a": "客廳",
+      "b": "臥室",
+      "type": "door"
+    },
+    {
+      "a": "浴廁",
+      "b": "客廳",
+      "type": "door"
+    }
+  ],
+  "min_shared_wall_mm": 900,
+  "only_via": {},
+  "entrance": {
+    "side": "S",
+    "room": "客廳",
+    "width": 900
+  },
+  "door_widths": {
+    "entrance": 900,
+    "浴廁": 700,
+    "default": 800
+  },
+  "window_required": [
+    "客廳",
+    "臥室"
+  ]
+}

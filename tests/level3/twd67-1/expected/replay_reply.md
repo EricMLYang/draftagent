@@ -1,0 +1,1 @@
+注意：nodes.csv、existing_drain.csv、road_center.csv 的平面座標是 TWD67 TM2（EPSG:3828，檔頭註記「舊系統」，且與 site.geojson 的 EPSG:3826 基地界線相差約 850 m），已以 pyproj 預設參數轉換為 TWD97 TM2（EPSG:3826）後寫入 spec（轉換精度約數公尺，請確認）。高程未變動。通過本 repo 現有 verifier 的檢查項目（不代表圖面符合法規）。

@@ -1,0 +1,38 @@
+{
+  "kind": "profile",
+  "title": "U1 排水幹線縱斷面圖",
+  "line_name": "U1 排水幹線",
+  "h_scale": 200,
+  "v_scale": 50,
+  "nodes": [
+    {"station_m": 0.0,  "label": "CP1",   "kind": "catch_pit",  "ground_el": 121.20, "invert_el": 120.30, "top_el": 120.80, "road_center_el": 121.30},
+    {"station_m": 15.0, "label": "MH1",   "kind": "manhole",    "ground_el": 121.05, "invert_el": 120.18, "top_el": 120.68, "road_center_el": 121.15},
+    {"station_m": 30.0, "label": "MH2",   "kind": "manhole",    "ground_el": 120.90, "invert_el": 120.06, "top_el": 120.56, "road_center_el": 121.00},
+    {"station_m": 48.0, "label": "放流井", "kind": "outlet_pit", "ground_el": 120.70, "invert_el": 119.92, "road_center_el": 120.80},
+    {"station_m": 60.0, "label": "道路側溝", "kind": "outfall",   "ground_el": 120.50, "invert_el": 119.85, "road_center_el": 120.62}
+  ],
+  "segments": [
+    {"section": "U型溝 W40×H50", "size_m": 0.50, "n": 0.013},
+    {"section": "U型溝 W40×H50", "size_m": 0.50, "n": 0.013},
+    {"section": "RCP D300", "size_m": 0.30, "n": 0.013},
+    {"section": "RCP D300", "size_m": 0.30, "n": 0.013}
+  ],
+  "levels": [
+    {"station_m": 0.0,  "el": 120.55, "label": "進水管", "kind": "pipe_in"},
+    {"station_m": 48.0, "el": 120.40, "label": "溢流高程", "kind": "overflow"},
+    {"station_m": 48.0, "el": 120.15, "label": "設計水位", "kind": "design_wl"},
+    {"station_m": 48.0, "el": 119.92, "label": "放流管", "kind": "pipe_out"}
+  ],
+  "sheet": {
+    "size": "A3",
+    "title_block": {
+      "project": "桃園某集合住宅新建工程排水計畫",
+      "drawing_no": "D-07",
+      "date": "115.10.17",
+      "designer": "",
+      "checker": ""
+    },
+    "north_arrow": false,
+    "show_scale_bar": true
+  }
+}

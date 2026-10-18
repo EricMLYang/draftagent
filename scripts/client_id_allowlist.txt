@@ -1,0 +1,14 @@
+# check_no_client_ids.py 白名單：每行 <path-glob>:<regex>
+# regex 在命中所在的整行上 search；符合就放行。只放「合成 / 示範」資料，真實案件資料一律移除不放行。
+
+# Level 1-2 合成地籍（tests/level1/1-2/input/SYNTHETIC.txt）：假「測試段（段號 0001）」地號 12、12-1、13
+tests/level1/1-2/*:測試段（段號 0001）.*地號[:：]\s*12、12-1、13
+
+# Level 3 chain-1 合成地籍（tools/make_level3_fixtures.py 產生）：假「測試二段（段號 0042）」地號 105、106（干擾項 104、107、108）
+tests/level3/chain-1/*:地號[：:]?\s*105(、| ∪ )106
+tools/make_level3_fixtures.py:地號 (105(、| ∪ )106|8 碼)
+draftagent/eval/reference_solvers.py:地號 105、106
+
+# Level 4 chain-full 合成地籍（tools/make_fixtures_level4.py 產生）：假「測試五段（段號 0057）」地號 213、214（干擾項 212、215、216）
+tests/level4/chain-full/*:地號[：:]?\s*213(、| ∪ )214
+tools/make_fixtures_level4.py:地號 (213(、| ∪ )214|8 碼)

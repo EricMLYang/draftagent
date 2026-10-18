@@ -1,0 +1,137 @@
+{
+  "kind": "outflow_control",
+  "title": "合成案例：0.8 ha 都市計畫區新建集合住宅出流管制（示範）",
+  "site": {
+    "area_ha": 0.8,
+    "in_urban_plan": true,
+    "is_new_building": true,
+    "gravity_drainage": true,
+    "outfall_q10_capacity_ok": true,
+    "use_simple_check": false
+  },
+  "horner": {
+    "station": "示範站（非實際測站）",
+    "source_note": "示範用，非實際測站：係數為合成值，僅供測試；實案須由工程師依治理規劃報告或鄰近氣象局 / 水利署雨量站分析提供",
+    "params": {
+      "2": {
+        "a": 1990.0,
+        "b": 30.0,
+        "c": 0.75
+      },
+      "5": {
+        "a": 2770.0,
+        "b": 30.0,
+        "c": 0.75
+      },
+      "10": {
+        "a": 3270.0,
+        "b": 30.0,
+        "c": 0.75
+      }
+    }
+  },
+  "pre": {
+    "subareas": [
+      {
+        "name": "旱作（開發前）",
+        "area_ha": 0.8,
+        "scs_class": 1,
+        "soil_group": "B"
+      }
+    ],
+    "flow_path": {
+      "overland_length_m": 120.0,
+      "overland_slope_pct": 1.0
+    }
+  },
+  "post": {
+    "subareas": [
+      {
+        "name": "屋頂及鋪面",
+        "area_ha": 0.56,
+        "scs_class": 17,
+        "soil_group": "B"
+      },
+      {
+        "name": "綠地",
+        "area_ha": 0.24,
+        "scs_class": 8,
+        "soil_group": "B"
+      }
+    ],
+    "flow_path": {
+      "inlet_time_min": 5.0,
+      "channels": [
+        {
+          "length_m": 110.0,
+          "n": 0.016,
+          "R_m": 0.1,
+          "S": 0.005
+        }
+      ]
+    }
+  },
+  "detention": {
+    "layers": [
+      {
+        "elev_m": 100.0,
+        "area_m2": 400.0
+      },
+      {
+        "elev_m": 100.5,
+        "area_m2": 440.0
+      },
+      {
+        "elev_m": 101.0,
+        "area_m2": 480.0
+      },
+      {
+        "elev_m": 101.5,
+        "area_m2": 520.0
+      },
+      {
+        "elev_m": 102.0,
+        "area_m2": 560.0
+      },
+      {
+        "elev_m": 102.5,
+        "area_m2": 600.0
+      }
+    ],
+    "freeboard_m": 0.3
+  },
+  "outlet": {
+    "orifices": [
+      {
+        "name": "OR1 低水孔口",
+        "type": "vertical_circular",
+        "invert_m": 100.0,
+        "diameter_m": 0.15
+      },
+      {
+        "name": "OR2 中水孔口",
+        "type": "vertical_rect",
+        "invert_m": 101.2,
+        "width_m": 0.3,
+        "height_m": 0.15
+      }
+    ],
+    "weirs": [
+      {
+        "name": "W1 溢流堰",
+        "crest_m": 101.9,
+        "length_m": 1.5,
+        "crest_width_m": 0.3
+      }
+    ]
+  },
+  "tailwater": {
+    "mode": "hydrograph",
+    "Hb_m": 99.0,
+    "Hp_m": {
+      "2": 99.6,
+      "5": 99.8,
+      "10": 100.0
+    }
+  }
+}

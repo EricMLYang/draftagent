@@ -1,0 +1,13 @@
+{
+  "kind": "plan",
+  "units": "mm",
+  "title": "1-1 單房平面圖",
+  "wall_thickness": 200,
+  "rooms": [
+    {"name": "房間", "rect": {"x": 0, "y": 0, "width": 6000, "depth": 4000}}
+  ],
+  "openings": [
+    {"type": "door", "side": "S", "offset": 2550, "width": 900, "swing": "in", "hinge": "start"}
+  ],
+  "dimensions": {"auto_overall": true, "offset": 800}
+}

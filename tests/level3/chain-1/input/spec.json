@@ -1,0 +1,19 @@
+{
+  "parcels": [
+    {
+      "section_name": "測試二段",
+      "section_code": "0042",
+      "land_numbers": [
+        "105",
+        "106"
+      ]
+    }
+  ],
+  "cadastre_path": "tests/level3/chain-1/input/cadastre.shp",
+  "zoning_path": "tests/level3/chain-1/input/zoning.shp",
+  "zoning_field": "分區",
+  "target_crs": "EPSG:3826",
+  "output_path": "runs/level3-chain-1/site.gpkg",
+  "expected_area_m2": 1764.58,
+  "expected_area_source": "prompt（地政資料登記面積合計）"
+}

@@ -1,0 +1,161 @@
+{
+  "kind": "floor-plan",
+  "units": "mm",
+  "title": "範例 小住宅平面圖",
+  "print_scale": 100,
+  "outline": {
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 9600,
+      "depth": 7000
+    }
+  },
+  "wall_thickness": {
+    "exterior": 180,
+    "interior": 100
+  },
+  "rooms": [
+    {
+      "name": "起居室",
+      "use": "客廳",
+      "rect": {
+        "x": 180,
+        "y": 180,
+        "width": 5020,
+        "depth": 3820
+      }
+    },
+    {
+      "name": "臥房",
+      "use": "臥室",
+      "rect": {
+        "x": 5200,
+        "y": 180,
+        "width": 4220,
+        "depth": 3820
+      }
+    },
+    {
+      "name": "廚房",
+      "use": "廚房",
+      "rect": {
+        "x": 180,
+        "y": 4000,
+        "width": 3420,
+        "depth": 2820
+      }
+    },
+    {
+      "name": "衛浴",
+      "use": "浴廁",
+      "rect": {
+        "x": 3600,
+        "y": 4000,
+        "width": 2000,
+        "depth": 2820
+      }
+    },
+    {
+      "name": "書房",
+      "use": "書房",
+      "rect": {
+        "x": 5600,
+        "y": 4000,
+        "width": 3820,
+        "depth": 2820
+      }
+    }
+  ],
+  "doors": [
+    {
+      "id": "D1",
+      "between": [
+        "起居室",
+        "outside"
+      ],
+      "side": "S",
+      "width": 900,
+      "offset": 3400
+    },
+    {
+      "id": "D2",
+      "between": [
+        "起居室",
+        "臥房"
+      ],
+      "width": 800
+    },
+    {
+      "id": "D3",
+      "between": [
+        "起居室",
+        "廚房"
+      ],
+      "width": 850,
+      "hinge": "end"
+    },
+    {
+      "id": "D4",
+      "between": [
+        "衛浴",
+        "起居室"
+      ],
+      "width": 700,
+      "swing_into": "衛浴"
+    },
+    {
+      "id": "D5",
+      "between": [
+        "書房",
+        "臥房"
+      ],
+      "width": 800
+    }
+  ],
+  "windows": [
+    {
+      "id": "W1",
+      "room": "起居室",
+      "side": "S",
+      "width": 1800,
+      "offset": 800
+    },
+    {
+      "id": "W2",
+      "room": "臥房",
+      "side": "S",
+      "width": 1500
+    },
+    {
+      "id": "W3",
+      "room": "臥房",
+      "side": "E",
+      "width": 1200
+    },
+    {
+      "id": "W4",
+      "room": "廚房",
+      "side": "N",
+      "width": 1500
+    },
+    {
+      "id": "W5",
+      "room": "書房",
+      "side": "N",
+      "width": 1500
+    },
+    {
+      "id": "W6",
+      "room": "衛浴",
+      "side": "N",
+      "width": 600
+    }
+  ],
+  "entrance": "D1",
+  "dimensions": {
+    "auto_overall": true,
+    "room_chains": true,
+    "offset": 800
+  }
+}

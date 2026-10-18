@@ -1,0 +1,3 @@
+本目錄所有圖資皆為【合成資料 SYNTHETIC】，由 tools/make_examples.py 以固定座標產生，
+不是國土測繪中心或任何機關的真實地籍 / 使用分區 / DTM，僅供 `draftagent new` 範例使用。
+與 tests/level*/ 的評估考題圖資刻意不同。

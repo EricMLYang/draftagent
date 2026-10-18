@@ -1,0 +1,15 @@
+{
+  "_note": "合成案例（示範 Horner，非實際測站）之重算值；rtol 1e-4。由 draftagent.hydro.outflow.compute 產生後經手算抽查（R24、T1、Tc 下限、CN 上限）。",
+  "verifier_ok": true,
+  "route": "outflow_plan_or_exempt_filing",
+  "exempt_retention_m3": 540.0,
+  "simple_check": {"volume_required_m3": 416.0, "q10_max_cms": 0.128, "eligible": true, "q10_ok": false},
+  "pre": {"cn_weighted": 81.0, "cn_used": 70.0, "cn_capped": true, "tc_min": 20.132211},
+  "post": {"cn_weighted": 86.9, "cn_used": 86.9, "tc_input_min": 6.925498, "tc_min": 10.0},
+  "events": {
+    "2":  {"R24_mm": 201.176069, "pre_peak_cms": 0.133697, "post_inflow_peak_cms": 0.207322, "post_outflow_peak_cms": 0.048733, "max_level_m": 101.116701},
+    "5":  {"R24_mm": 280.029000, "pre_peak_cms": 0.217591, "post_inflow_peak_cms": 0.301123, "post_outflow_peak_cms": 0.111715, "max_level_m": 101.480435},
+    "10": {"R24_mm": 330.575751, "pre_peak_cms": 0.272259, "post_inflow_peak_cms": 0.360711, "post_outflow_peak_cms": 0.140362, "max_level_m": 101.702052}
+  },
+  "detention": {"required_m3": 796.477473, "safety_factor": 1.2, "provided_m3": 1073.315893}
+}

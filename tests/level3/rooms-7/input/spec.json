@@ -1,0 +1,188 @@
+{
+  "kind": "floor-plan",
+  "units": "mm",
+  "title": "二房住宅平面圖",
+  "print_scale": 100,
+  "outline": {
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 10000.0,
+      "depth": 8000.0
+    }
+  },
+  "wall_thickness": {
+    "exterior": 200.0,
+    "interior": 120.0
+  },
+  "rooms": [
+    {
+      "name": "玄關",
+      "use": "玄關",
+      "rect": {
+        "x": 200,
+        "y": 200,
+        "width": 1800,
+        "depth": 3600
+      }
+    },
+    {
+      "name": "客廳",
+      "use": "客廳",
+      "rect": {
+        "x": 2000,
+        "y": 200,
+        "width": 4400,
+        "depth": 3600
+      }
+    },
+    {
+      "name": "主臥室",
+      "use": "臥室",
+      "rect": {
+        "x": 6400,
+        "y": 200,
+        "width": 3400,
+        "depth": 3600
+      }
+    },
+    {
+      "name": "廚房",
+      "use": "廚房",
+      "rect": {
+        "x": 200,
+        "y": 3800,
+        "width": 3400,
+        "depth": 4000
+      }
+    },
+    {
+      "name": "走廊",
+      "use": "走廊",
+      "rect": {
+        "x": 3600,
+        "y": 3800,
+        "width": 6200,
+        "depth": 1200
+      }
+    },
+    {
+      "name": "次臥室",
+      "use": "臥室",
+      "rect": {
+        "x": 3600,
+        "y": 5000,
+        "width": 4200,
+        "depth": 2800
+      }
+    },
+    {
+      "name": "浴廁",
+      "use": "浴廁",
+      "rect": {
+        "x": 7800,
+        "y": 5000,
+        "width": 2000,
+        "depth": 2800
+      }
+    }
+  ],
+  "doors": [
+    {
+      "id": "D1",
+      "between": [
+        "玄關",
+        "outside"
+      ],
+      "width": 900.0,
+      "side": "S"
+    },
+    {
+      "id": "D2",
+      "between": [
+        "玄關",
+        "客廳"
+      ],
+      "width": 800.0
+    },
+    {
+      "id": "D3",
+      "between": [
+        "廚房",
+        "客廳"
+      ],
+      "width": 800.0
+    },
+    {
+      "id": "D4",
+      "between": [
+        "客廳",
+        "走廊"
+      ],
+      "width": 800.0
+    },
+    {
+      "id": "D5",
+      "between": [
+        "主臥室",
+        "走廊"
+      ],
+      "width": 800.0
+    },
+    {
+      "id": "D6",
+      "between": [
+        "次臥室",
+        "走廊"
+      ],
+      "width": 800.0
+    },
+    {
+      "id": "D7",
+      "between": [
+        "浴廁",
+        "走廊"
+      ],
+      "width": 700.0
+    }
+  ],
+  "windows": [
+    {
+      "id": "W1",
+      "room": "客廳",
+      "side": "S",
+      "width": 1800
+    },
+    {
+      "id": "W2",
+      "room": "主臥室",
+      "side": "S",
+      "width": 1500
+    },
+    {
+      "id": "W3",
+      "room": "主臥室",
+      "side": "E",
+      "width": 1200
+    },
+    {
+      "id": "W4",
+      "room": "廚房",
+      "side": "W",
+      "width": 1500
+    },
+    {
+      "id": "W5",
+      "room": "次臥室",
+      "side": "N",
+      "width": 1500
+    },
+    {
+      "id": "W6",
+      "room": "浴廁",
+      "side": "N",
+      "width": 600
+    }
+  ],
+  "entrance": "D1"
+}

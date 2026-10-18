@@ -1,0 +1,19 @@
+{
+  "parcels": [
+    {
+      "section_name": "測試五段",
+      "section_code": "0057",
+      "land_numbers": [
+        "213",
+        "214"
+      ]
+    }
+  ],
+  "cadastre_path": "tests/level4/chain-full/input/cadastre.shp",
+  "zoning_path": "tests/level4/chain-full/input/zoning.shp",
+  "zoning_field": "分區",
+  "target_crs": "EPSG:3826",
+  "output_path": "runs/level4-chain-full/site.gpkg",
+  "expected_area_m2": 1504.17,
+  "expected_area_source": "prompt（地政資料登記面積合計）"
+}

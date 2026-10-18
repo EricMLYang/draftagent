@@ -1,0 +1,164 @@
+# 桃園市建築基地雨水流出抑制設施：計算用法規 / 手冊數值
+#
+# !! 體驗版草稿 !!
+# 本檔數值由 agent 自研究彙整 docs/research/2026-10-17-taoyuan-drainage.md 及任務說明轉錄，
+# 尚未由人工對照原文 PDF。verified: false 期間，drainage_calc_check 一律輸出 WARNING。
+# 人工確認後請：
+#   1. 逐項對照原文（逕流量標準條文、建技規則 4-3、設計參考手冊 表 7-1 / 7-3 / 7-4 / 第 7.7 節）
+#   2. 補上設計參考手冊的正式 URL 與版本（目前為 108-04-01 草案，正式版未確認）
+#   3. 將 verified 改為 true，並在 verified_by / verified_on 留紀錄
+#
+# 已知待確認事項（詳見各段 note）：
+#   - 設計參考手冊為 108-04-01「草案」；正式版是否修改係數未確認
+#   - 手冊 URL 未記錄於研究文件
+#   - 圓形孔口公式寫法有兩種版本（見 orifice_weir.note）
+#   - 各雨量站適用行政區：研究文件未收錄，目前只列與站名同名之行政區
+#   - Horner 缺 2 年重現期係數
+#   - 建技規則 4-3 的 as_of 為查閱日期，非法規修正發布日期
+
+verified: false
+note: >-
+  數值由 agent 自研究彙整（docs/research/2026-10-17-taoyuan-drainage.md）與任務說明轉錄，
+  待人工對照原文 PDF 確認；桃園市雨水流出抑制設施設計參考手冊為 108-04-01 草案，正式版未確認。
+verified_by: null
+verified_on: null
+
+# ------------------------------------------------------------------ 逕流量標準（法規）
+runoff_standard:
+  source: 桃園市建築基地開發排入雨水下水道逕流量標準（民國 108-09-26）
+  url: https://law.tycg.gov.tw/NewsContent.aspx?id=2423
+  as_of: "2019-09-26"
+  min_storage_m3_per_m2: 0.051        # 最小貯集量 = As × 0.051
+  max_release_cms_per_m2: 0.000014    # 最大容許排放量 = As × 0.000014（m³/s）
+  design_release_ratio: [0.85, 1.00]  # 設計排放量須介於容許排放量的 85%–100%
+  exempt_site_area_m2_max: 300        # 基地面積 ≤ 此值免設
+  note: "design_release_ratio 與 exempt_site_area_m2_max 依任務說明轉錄，研究文件未逐字引用條文，待核"
+
+# ------------------------------------------------------------------ 建技規則 4-3
+building_code_4_3:
+  source: 建築技術規則建築設計施工編 第 4-3 條
+  url: https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070115&flno=4-3
+  as_of: "2026-10-17"   # 查閱日期，非法規修正發布日期，待確認
+  min_storage_m3_per_m2: 0.045
+  applies_site_area_m2_gt: 300   # 研究文件 §1：都市計畫區、基地 > 300 m²
+  note: "適用條件（都市計畫區、> 300 m²）取自研究文件 §1 表，待對照條文"
+
+# ------------------------------------------------------------------ 設計參考手冊（草案）共用來源
+# 以下各段皆出自：桃園市雨水流出抑制設施設計參考手冊（草案，民國 108-04-01）
+# URL：研究文件未記錄（待補）
+
+# Horner 降雨強度公式 I = a / (t + b)^c（I: mm/hr，t: min）— 手冊 表 7-3
+horner:
+  source: 桃園市雨水流出抑制設施設計參考手冊（草案）表 7-3
+  url: null
+  url_note: 研究文件未記錄手冊 URL，待補
+  as_of: "2019-04-01"
+  note: >-
+    缺 2 年重現期係數。districts 欄：研究文件未收錄各站適用行政區，
+    目前只列與站名同名之行政區（桃園區由手冊算例 t=5 min、I20=161.78 mm/hr 佐證；
+    中壢區、八德區為同名推定）。其他行政區須工程師以 station 指定並補 yaml。
+  stations:
+    中壢:
+      districts: [中壢區]
+      T5:  {a: 2924.78,  b: 30.02, c: 0.830}
+      T10: {a: 2994.149, b: 32.45, c: 0.791}
+      T20: {a: 2654.014, b: 32.95, c: 0.730}
+    桃園:
+      districts: [桃園區]
+      T5:  {a: 1549.916, b: 23.99, c: 0.720}
+      T10: {a: 837.731,  b: 16.28, c: 0.562}
+      T20: {a: 505.737,  b: 9.34,  c: 0.428}
+    八德:
+      districts: [八德區]
+      T5:  {a: 2344.655, b: 27.90, c: 0.791}
+      T10: {a: 3383.173, b: 33.69, c: 0.827}
+      T20: {a: 5277.144, b: 41.24, c: 0.882}
+
+# 逕流係數 — 手冊 表 7-1（範圍 + 中值）
+runoff_coefficients:
+  source: 桃園市雨水流出抑制設施設計參考手冊（草案）表 7-1
+  url: null
+  url_note: 研究文件未記錄手冊 URL，待補
+  as_of: "2019-04-01"
+  classes:
+    commercial:          {name: 商業區,           min: 0.70, max: 0.93, median: 0.83}
+    concrete_asphalt:    {name: 混凝土及瀝青路面, min: 0.85, max: 0.95, median: 0.90}
+    mixed_residential:   {name: 混合住宅區,       min: 0.66, max: 0.89, median: 0.79}
+    industrial:          {name: 工業區,           min: 0.56, max: 0.78, median: 0.67}
+    institution_school:  {name: 機關學校,         min: 0.50, max: 0.72, median: 0.61}
+    park_green:          {name: 公園綠地,         min: 0.46, max: 0.67, median: 0.56}
+    agricultural:        {name: 農業區,           min: 0.30, max: 0.50, median: 0.38}
+    mountain_plain:      {name: 山區平原,         min: 0.55, max: 0.75, median: 0.60}
+    mountain_steep:      {name: 山區陡坡,         min: 0.75, max: 0.90, median: 0.83}
+
+# 曼寧粗糙係數 n — 手冊 表 7-4（n 為單值；n_range 為範圍，須由工程師以 n_override 指定）
+manning_n:
+  source: 桃園市雨水流出抑制設施設計參考手冊（草案）表 7-4
+  url: null
+  url_note: 研究文件未記錄手冊 URL，待補
+  as_of: "2019-04-01"
+  materials:
+    rc_pipe_ge_600:             {name: "RC 管（管徑 ≥ 0.6 m）", n: 0.013, shape: circular, diameter_min_m: 0.6}
+    rc_pipe_lt_600:             {name: "RC 管（管徑 < 0.6 m）", n: 0.015, shape: circular, diameter_max_m: 0.6}
+    plastic_frp_pipe:           {name: 塑膠管 / 纖維強化管, n_range: [0.010, 0.013], shape: circular}
+    u_ditch_rc:                 {name: U 型溝（RC）, n: 0.016, shape: rectangular}
+    box_culvert:                {name: 矩形箱涵, n: 0.015, shape: rectangular}
+    masonry_cobble_plastered:   {name: 漿砌卵石（抹面）, n: 0.014, shape: rectangular}
+    masonry_cobble_unplastered: {name: 漿砌卵石（未抹面）, n: 0.025, shape: rectangular}
+    dry_cobble:                 {name: 乾砌卵石, n: 0.030, shape: rectangular}
+    grass_earth_ditch:          {name: 草溝 / 土溝, n_range: [0.025, 0.080], shape: rectangular}
+  note: "shape 欄為本 repo 用來檢查斷面型式與材料是否相符的屬性，非手冊數值"
+
+# 設計準則 — 手冊（章節待核）
+design_criteria:
+  source: 桃園市雨水流出抑制設施設計參考手冊（草案）
+  url: null
+  url_note: 研究文件未記錄手冊 URL，待補
+  as_of: "2019-04-01"
+  return_period_yr:
+    storage: 20       # 貯集設施設計（本 repo 用於溢流堰 Q20 檢核）
+    release: 5
+    collection: 5     # 集水 / 排水管渠設計
+  tc_min_recommended: 5            # 建築基地建議集流時間（min）
+  velocity_m_s: [0.8, 3.0]         # 管渠設計流速範圍
+  freeboard_u_ditch:               # U 型溝出水高（寬度 ≤ width_max_m 適用）
+    width_max_m: 0.60
+    ratio_of_depth: 0.30           # 出水高 ≥ 水深 × 0.30
+    min_m: 0.20                    # 且 ≥ 0.20 m
+  min_pipe_diameter:               # 依集水面積之最小管徑（area_m2_max 為上限含）
+    - {area_m2_max: 600,  diameter_min_mm: 150}
+    - {area_m2_max: 1000, diameter_min_mm: 200}
+  loss_coefficients:
+    entrance: 0.5
+    exit: 1.0
+  # 抽水機起抽後最少連續運轉時間：起抽水位 → 停機水位之間的容量 / 抽水量 ≥ 此值（drainage/hydraulics.py E7）
+  # 來源不是設計參考手冊，而是送審檢核表 → 獨立附 source / verified
+  pump_min_run_min:
+    value: 15
+    unit: min
+    source: 桃園市雨水下水道相關設施送審案件排水報告內容檢核表（起抽 / 停機水位）
+    source_url: "https://sewergis.tycg.gov.tw/Content/雨水申請案/排水報告內容檢核表.odt"
+    as_of: null
+    verified: false
+    note: >-
+      15 分鐘由任務說明轉錄；研究文件 §2a 只記錄檢核表要求標示「起抽/停機水位」，
+      「起抽後至少運轉 15 分鐘」原文未收錄，待人工開啟檢核表核對。
+  note: >-
+    出水高「水深 30% 且 ≥ 0.20 m」本 repo 解讀為 freeboard ≥ max(0.30 × 水深, 0.20 m)；
+    寬 > 0.60 m 之 U 型溝、集水面積 > 1000 m² 之管徑，手冊規則未收錄 → verifier 僅 WARNING。
+
+# 孔口 / 堰 — 手冊 7.7
+# 公式形式寫在 draftagent/hydro/taoyuan.py 的 orifice_q / weir_q docstring
+orifice_weir:
+  source: 桃園市雨水流出抑制設施設計參考手冊（草案）第 7.7 節
+  url: null
+  url_note: 研究文件未記錄手冊 URL，待補
+  as_of: "2019-04-01"
+  rect_orifice_coeff: 2.6563   # Q = k · L · B · (y − L/2)^0.5
+  circ_orifice_coeff: 2.0862   # Q = k · L² · (y − L/2)^0.5
+  rect_weir_coeff: 1.767       # Q = k · B · y^1.5
+  note: >-
+    疑點待核：研究彙整另見「孔口流量 Qa = 2.0862 × W × L × (h − L/2)^0.5」寫法（係數 2.0862
+    搭配矩形 W×L），與手冊 7.7「圓形孔口 Q = 2.0862 · L² · (y − L/2)^0.5」不一致。
+    本檔只收手冊 7.7 版本。三個係數約為 Cd = 0.6 時 0.6·√(2g)、0.6·(π/4)·√(2g)、
+    (2/3)·0.6·√(2g) 的數值，可作為人工核對參考。

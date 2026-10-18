@@ -1,0 +1,70 @@
+# 山坡地坡度分級門檻（坡度百分比 %，= tanθ × 100）
+#
+# !! 體驗版草稿 !!
+# 本檔數值由 agent 依記憶草擬，尚未對照法規原文。verified: false 期間，
+# slope_check verifier 一律輸出 WARNING。人工確認後請：
+#   1. 逐條對照原文修正 min_pct / max_pct / boundary
+#   2. 填寫正確的 as_of（法規最新修正發布日期）與 source（含條號）
+#   3. 將 verified 改為 true，並在 verified_by / verified_on 留紀錄
+#
+# 已知待確認事項：
+#   - 邊界歸屬：剛好 5%、15%… 屬較低級（upper_inclusive）還是較高級（lower_inclusive）
+#   - 法定坡度計算方法為「坵塊圖法」（坵塊內平均坡度），本 repo 以 DTM 逐像元
+#     Horn 法計算，兩者結果不同；本檔只提供門檻，不代表計算方法符合法定程序
+#   - 水土保持技術規範另有坡度分級（可能細分至七級坡），用途不同，勿混用
+
+verified: false
+note: "數值由 agent 依記憶草擬，待人工對照法規原文確認"
+verified_by: null
+verified_on: null
+
+# 分級邊界歸屬：
+#   upper_inclusive → 第 k 級為 (min_pct, max_pct]，第一級含 0（例：剛好 5% 屬一級坡）
+#   lower_inclusive → 第 k 級為 [min_pct, max_pct)（例：剛好 5% 屬二級坡）
+boundary: upper_inclusive
+boundary_note: "待確認：草擬時依「一級坡 ≤5%」字面解讀為 upper_inclusive，需對照原文"
+
+# 計算參數（非法規數值）
+params:
+  # 分級前將坡度四捨五入到小數點後幾位，避免 5.0000000001% 之類浮點誤差落入錯誤級別
+  slope_round_decimals: 6
+  # 保留給「無坡度值」（DTM 邊界像元或 nodata）的分級代碼，不屬於任何法定級別
+  nodata_class: 0
+
+classes:
+  - class: 1
+    name: 一級坡
+    min_pct: 0
+    max_pct: 5
+    source: 山坡地土地可利用限度分類標準（依山坡地保育利用條例訂定）
+    as_of: "2026-10-17"   # agent 草擬日期，非法規修正日期，待確認
+  - class: 2
+    name: 二級坡
+    min_pct: 5
+    max_pct: 15
+    source: 山坡地土地可利用限度分類標準（依山坡地保育利用條例訂定）
+    as_of: "2026-10-17"
+  - class: 3
+    name: 三級坡
+    min_pct: 15
+    max_pct: 30
+    source: 山坡地土地可利用限度分類標準（依山坡地保育利用條例訂定）
+    as_of: "2026-10-17"
+  - class: 4
+    name: 四級坡
+    min_pct: 30
+    max_pct: 40
+    source: 山坡地土地可利用限度分類標準（依山坡地保育利用條例訂定）
+    as_of: "2026-10-17"
+  - class: 5
+    name: 五級坡
+    min_pct: 40
+    max_pct: 55
+    source: 山坡地土地可利用限度分類標準（依山坡地保育利用條例訂定）
+    as_of: "2026-10-17"
+  - class: 6
+    name: 六級坡
+    min_pct: 55
+    max_pct: null   # 無上限
+    source: 山坡地土地可利用限度分類標準（依山坡地保育利用條例訂定）
+    as_of: "2026-10-17"

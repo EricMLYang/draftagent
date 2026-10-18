@@ -1,0 +1,59 @@
+# 桃園市雨水下水道送審「排水計畫書」本文：章節、統一圖名、版面格式
+#
+# !! 體驗版草稿 !!
+# - chapters：章節順序依任務交辦（引用 docs/research/2026-10-17-taoyuan-drainage.md §2a 所列
+#   「桃園市排水計畫書圖格式說明.odt」），研究文件本身只收錄 14 項統一圖名，章節名稱原文待核。
+# - sheets：14 項統一圖名轉錄自研究文件 §2a 表格；scale_key 對應 hydro/codes/taoyuan_drawing.yaml。
+# - layout：研究文件 §2a 未收錄版面數值（邊界、字號、行距），以下為本 repo 暫定值，
+#   **不是**格式說明原文；人工開啟 source_url 原檔核對後再改 verified。
+# verified: false 期間 report_check 一律輸出 WARNING。
+
+verified: false
+note: "章節名依任務交辦、統一圖名轉錄自研究文件 §2a；版面數值（邊界 / 字號 / 行距）研究文件未收錄，為 repo 暫定值，待以格式說明原檔核對"
+verified_by: null
+verified_on: null
+source: 桃園市排水計畫書圖格式說明
+source_url: "https://sewergis.tycg.gov.tw/Content/雨水申請案/桃園市排水計畫書圖格式說明.odt"
+retrieved_on: "2026-10-17"
+
+# key → 章名（順序即本文順序）
+chapters:
+  - {key: summary,    title: 摘要}
+  - {key: purpose,    title: 一、目的}
+  - {key: scope,      title: 二、計畫範圍}
+  - {key: overview,   title: 三、內容概要}
+  - {key: basic_data, title: 四、基本資料}
+  - {key: facilities, title: 五、雨水下水道相關設施}
+  - {key: cost,       title: 六、設施項目數量及總工程造價}
+appendix_title: 附圖
+
+# 研究文件 §2a：14 項統一圖名（順序 = 檢核表項次）
+# produced_by：本 repo 產出的圖（drainage-plan 的 DXF / layout），其餘由使用者另附
+sheets:
+  - {item: 1,  name: 地理位置圖,             scale_key: location_map}
+  - {item: 2,  name: 地籍配置圖,             scale_key: cadastral_map}
+  - {item: 3,  name: 基地現況照片,           scale_key: null, produced_by: photos}
+  - {item: 4,  name: 基地附近排水系統現況圖, scale_key: existing_drainage_map}
+  - {item: 5,  name: 建築物一樓平面圖,       scale_key: null, provided_by: 建築師}
+  - {item: 6,  name: 排水系統平面設計圖,     scale_key: drainage_plan, produced_by: plan}
+  - {item: 7,  name: 排水系統縱斷面圖,       scale_key: drainage_profile, produced_by: profile}
+  - {item: 8,  name: 排水系統橫斷面圖,       scale_key: drainage_cross_section}
+  - {item: 9,  name: 排水系統各部詳圖,       scale_key: drainage_details, produced_by: detail}
+  - {item: 10, name: 排水系統集水區分析圖,   scale_key: catchment_map, produced_by: catchment}
+  - {item: 11, name: 水理計算,               scale_key: null, produced_by: text_hydraulics}
+  - {item: 12, name: 基地內排水配置圖說,     scale_key: site_drainage_layout}
+  - {item: 13, name: 其他,                   scale_key: null, produced_by: text_storage}
+  - {item: 14, name: 檢核表,                 scale_key: null}
+
+layout:
+  page: {size: A4, width_mm: 210, height_mm: 297}
+  margins_mm: {top: 25, bottom: 25, left: 30, right: 20}
+  fonts:
+    east_asia: 標楷體
+    # 本機找不到 east_asia 時依序改用（WARNING）；全部找不到 → 仍指定 east_asia（WARNING，開啟端需有此字型）
+    east_asia_aliases: [標楷體, DFKai-SB, BiauKai]
+    east_asia_fallbacks: [Kaiti TC, STKaiti, AR PL UKai TW, Noto Serif CJK TC, PMingLiU]
+    latin: Times New Roman
+  sizes_pt: {title: 20, chapter: 16, section: 14, body: 12, table: 10, caption: 10}
+  line_spacing: 1.5
+  figure_width_mm: 155

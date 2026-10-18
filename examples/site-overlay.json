@@ -1,0 +1,15 @@
+{
+  "parcels": [
+    {
+      "section_name": "範例段",
+      "section_code": "0102",
+      "land_numbers": ["101", "0101-0003", "102"]
+    }
+  ],
+  "cadastre_path": "examples/data/site/cadastre.shp",
+  "zoning_path": "examples/data/site/zoning.shp",
+  "zoning_field": "分區",
+  "target_crs": "EPSG:3826",
+  "output_path": "runs/example-site/site.gpkg",
+  "expected_area_m2": 3675.0
+}

@@ -1,0 +1,129 @@
+{
+  "kind": "floor-plan",
+  "units": "mm",
+  "title": "小套房平面圖",
+  "print_scale": 100,
+  "outline": {
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 8000.0,
+      "depth": 6000.0
+    }
+  },
+  "wall_thickness": {
+    "exterior": 200.0,
+    "interior": 120.0
+  },
+  "rooms": [
+    {
+      "name": "客廳",
+      "use": "客廳",
+      "rect": {
+        "x": 200,
+        "y": 200,
+        "width": 4200,
+        "depth": 3400
+      }
+    },
+    {
+      "name": "臥室",
+      "use": "臥室",
+      "rect": {
+        "x": 4400,
+        "y": 200,
+        "width": 3400,
+        "depth": 3400
+      }
+    },
+    {
+      "name": "浴廁",
+      "use": "浴廁",
+      "rect": {
+        "x": 200,
+        "y": 3600,
+        "width": 2000,
+        "depth": 2200
+      }
+    },
+    {
+      "name": "廚房",
+      "use": "廚房",
+      "rect": {
+        "x": 2200,
+        "y": 3600,
+        "width": 5600,
+        "depth": 2200
+      }
+    }
+  ],
+  "doors": [
+    {
+      "id": "D1",
+      "between": [
+        "客廳",
+        "outside"
+      ],
+      "width": 900.0,
+      "side": "S",
+      "offset": 2900
+    },
+    {
+      "id": "D2",
+      "between": [
+        "客廳",
+        "廚房"
+      ],
+      "width": 800.0
+    },
+    {
+      "id": "D3",
+      "between": [
+        "客廳",
+        "臥室"
+      ],
+      "width": 800.0
+    },
+    {
+      "id": "D4",
+      "between": [
+        "浴廁",
+        "客廳"
+      ],
+      "width": 700.0
+    }
+  ],
+  "windows": [
+    {
+      "id": "W1",
+      "room": "客廳",
+      "side": "S",
+      "width": 1500
+    },
+    {
+      "id": "W2",
+      "room": "臥室",
+      "side": "S",
+      "width": 1500
+    },
+    {
+      "id": "W3",
+      "room": "臥室",
+      "side": "E",
+      "width": 1200
+    },
+    {
+      "id": "W4",
+      "room": "廚房",
+      "side": "N",
+      "width": 1500
+    },
+    {
+      "id": "W5",
+      "room": "浴廁",
+      "side": "W",
+      "width": 600
+    }
+  ],
+  "entrance": "D1"
+}

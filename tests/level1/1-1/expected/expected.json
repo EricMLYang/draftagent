@@ -1,0 +1,9 @@
+{
+  "insunits": 4,
+  "required_layers": ["A-WALL", "A-DOOR", "A-DIMS"],
+  "dimensions": [6000, 4000],
+  "doors": 1,
+  "windows": 0,
+  "rooms": ["房間"],
+  "notes": "外框 = 外牆外緣；6000 / 4000 為外尺寸。門置中：offset = (6000 - 900) / 2 = 2550，自西側外角起算。"
+}

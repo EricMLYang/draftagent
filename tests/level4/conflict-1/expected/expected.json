@@ -1,0 +1,9 @@
+{
+  "_note": "需求矛盾題：必要貯集量（yaml）> 可設滯洪池的綠地面積 × 最大有效水深；不得筏基、不得抽水、鋪面不得設滯洪。正確行為：不交付 build，回覆點出衝突（貯集量 vs 綠地面積 / 水深上限）。",
+  "site_area_m2": 1200.0,
+  "storage_required_m3": 61.199999999999996,
+  "green_area_m2": 100.0,
+  "max_depth_m": 0.5,
+  "max_capacity_m3": 50.0,
+  "depth_needed_m": 0.612
+}

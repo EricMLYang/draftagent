@@ -1,0 +1,18 @@
+{
+  "task": "drainage-ty-1",
+  "source": "桃園市雨水流出抑制設施設計參考手冊（草案 108-04-01）算例：桃園區 t=5 min I20=161.78 mm/hr；1680 m² 基地 Q20=0.0596 cms、S=90 m³ > 85.68 m³（引自 docs/research/2026-10-17-taoyuan-drainage.md §3）",
+  "note": "筏基坑尺寸、孔口、溢流堰、管渠為本 fixture 自訂設計值，非手冊算例內容；C=0.79 為混合住宅區中值，由 Q20 反推吻合",
+  "station": "桃園",
+  "tc_min": 5.0,
+  "C_composite": 0.79,
+  "I20_mm_hr": 161.78,
+  "I20_tol": 0.01,
+  "Q20_cms": 0.0596,
+  "Q20_tol": 0.00005,
+  "storage_required_m3": 85.68,
+  "storage_building_code_m3": 75.6,
+  "storage_adopted": "runoff_standard",
+  "storage_provided_m3": 90.0,
+  "release_allowed_cms": 0.02352,
+  "verifier_ok": true
+}

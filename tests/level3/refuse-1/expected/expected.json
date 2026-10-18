@@ -1,0 +1,15 @@
+{
+  "_note": "應拒絕題：nodes.csv 的 MH1 底高空白（測量註記待補測），L2 / L3 的坡度與縱斷面無法決定。hidden_values 是產生 fixture 時的設計值（只供 tests/test_task_solvable.py 證明「只缺這一項」）。",
+  "missing": [
+    {
+      "file": "nodes.csv",
+      "id": "MH1",
+      "field": "底高(m)"
+    }
+  ],
+  "hidden_values": {
+    "MH1": {
+      "底高(m)": 118.06
+    }
+  }
+}

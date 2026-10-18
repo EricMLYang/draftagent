@@ -1,0 +1,807 @@
+{
+  "kind": "drainage-plan",
+  "units": "m",
+  "crs": "EPSG:3826",
+  "title": "集合住宅社區新建工程排水系統（合成範例）",
+  "project": {
+    "name": "桃園區某集合住宅社區新建工程（合成範例）",
+    "district": "桃園區",
+    "location": "桃園市桃園區（合成座標，非真實基地；都市計畫區內住宅區）"
+  },
+  "site_boundary": [
+    [
+      281300.0,
+      2765400.0
+    ],
+    [
+      281420.0,
+      2765400.0
+    ],
+    [
+      281420.0,
+      2765500.0
+    ],
+    [
+      281300.0,
+      2765500.0
+    ]
+  ],
+  "building_footprints": [
+    [
+      [
+        281310.0,
+        2765415.0
+      ],
+      [
+        281350.0,
+        2765415.0
+      ],
+      [
+        281350.0,
+        2765445.0
+      ],
+      [
+        281310.0,
+        2765445.0
+      ]
+    ],
+    [
+      [
+        281370.0,
+        2765415.0
+      ],
+      [
+        281410.0,
+        2765415.0
+      ],
+      [
+        281410.0,
+        2765445.0
+      ],
+      [
+        281370.0,
+        2765445.0
+      ]
+    ],
+    [
+      [
+        281330.0,
+        2765465.0
+      ],
+      [
+        281390.0,
+        2765465.0
+      ],
+      [
+        281390.0,
+        2765485.0
+      ],
+      [
+        281330.0,
+        2765485.0
+      ]
+    ]
+  ],
+  "nodes": [
+    {
+      "id": "CB1",
+      "kind": "catch_basin",
+      "x": 281378.0,
+      "y": 2765492.0,
+      "ground_el": 121.32,
+      "invert_el": 120.67
+    },
+    {
+      "id": "CB2",
+      "kind": "catch_basin",
+      "x": 281395.0,
+      "y": 2765492.0,
+      "ground_el": 121.32,
+      "invert_el": 120.53
+    },
+    {
+      "id": "CB3",
+      "kind": "catch_basin",
+      "x": 281395.0,
+      "y": 2765462.0,
+      "ground_el": 121.23,
+      "invert_el": 120.35
+    },
+    {
+      "id": "CB4",
+      "kind": "catch_basin",
+      "x": 281395.0,
+      "y": 2765452.0,
+      "ground_el": 121.2,
+      "invert_el": 120.29
+    },
+    {
+      "id": "CB5",
+      "kind": "catch_basin",
+      "x": 281315.0,
+      "y": 2765480.0,
+      "ground_el": 121.25,
+      "invert_el": 120.6
+    },
+    {
+      "id": "CB6",
+      "kind": "catch_basin",
+      "x": 281315.0,
+      "y": 2765452.0,
+      "ground_el": 121.16,
+      "invert_el": 120.32
+    },
+    {
+      "id": "MH1",
+      "kind": "manhole",
+      "x": 281357.0,
+      "y": 2765452.0,
+      "ground_el": 121.18,
+      "invert_el": 120.06
+    },
+    {
+      "id": "CB7",
+      "kind": "catch_basin",
+      "x": 281305.0,
+      "y": 2765408.0,
+      "ground_el": 121.03,
+      "invert_el": 120.4
+    },
+    {
+      "id": "CB8",
+      "kind": "catch_basin",
+      "x": 281415.0,
+      "y": 2765408.0,
+      "ground_el": 121.08,
+      "invert_el": 120.43
+    },
+    {
+      "id": "MH2",
+      "kind": "manhole",
+      "x": 281357.0,
+      "y": 2765408.0,
+      "ground_el": 121.05,
+      "invert_el": 120.08
+    },
+    {
+      "id": "SI1",
+      "kind": "storage_inlet",
+      "x": 281356.0,
+      "y": 2765430.0,
+      "ground_el": 121.12,
+      "invert_el": 119.94
+    },
+    {
+      "id": "OW1",
+      "kind": "outlet_well",
+      "x": 281330.0,
+      "y": 2765409.0,
+      "ground_el": 121.04,
+      "invert_el": 119.8
+    },
+    {
+      "id": "OF1",
+      "kind": "outfall",
+      "x": 281330.0,
+      "y": 2765399.0,
+      "ground_el": 121.01,
+      "invert_el": 119.78
+    }
+  ],
+  "links": [
+    {
+      "id": "L1",
+      "from": "CB1",
+      "to": "CB2",
+      "section": {
+        "type": "pipe",
+        "d": 0.25
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    },
+    {
+      "id": "L2",
+      "from": "CB2",
+      "to": "CB3",
+      "section": {
+        "type": "pipe",
+        "d": 0.3
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    },
+    {
+      "id": "L3",
+      "from": "CB3",
+      "to": "CB4",
+      "section": {
+        "type": "pipe",
+        "d": 0.4
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    },
+    {
+      "id": "L4",
+      "from": "CB4",
+      "to": "MH1",
+      "section": {
+        "type": "pipe",
+        "d": 0.4
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    },
+    {
+      "id": "L5",
+      "from": "CB5",
+      "to": "CB6",
+      "section": {
+        "type": "pipe",
+        "d": 0.2
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    },
+    {
+      "id": "L6",
+      "from": "CB6",
+      "to": "MH1",
+      "section": {
+        "type": "pipe",
+        "d": 0.3
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    },
+    {
+      "id": "L7",
+      "from": "MH1",
+      "to": "SI1",
+      "section": {
+        "type": "pipe",
+        "d": 0.5
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    },
+    {
+      "id": "L8",
+      "from": "CB7",
+      "to": "MH2",
+      "section": {
+        "type": "pipe",
+        "d": 0.3
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    },
+    {
+      "id": "L9",
+      "from": "CB8",
+      "to": "MH2",
+      "section": {
+        "type": "pipe",
+        "d": 0.35
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    },
+    {
+      "id": "L10",
+      "from": "MH2",
+      "to": "SI1",
+      "section": {
+        "type": "pipe",
+        "d": 0.4
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    },
+    {
+      "id": "L11",
+      "from": "OW1",
+      "to": "OF1",
+      "section": {
+        "type": "pipe",
+        "d": 0.3
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    }
+  ],
+  "subcatchments": [
+    {
+      "id": "R1",
+      "polygon": [
+        [
+          281310.0,
+          2765415.0
+        ],
+        [
+          281350.0,
+          2765415.0
+        ],
+        [
+          281350.0,
+          2765445.0
+        ],
+        [
+          281310.0,
+          2765445.0
+        ]
+      ],
+      "landuse": "mixed_residential",
+      "outlet_node": "SI1"
+    },
+    {
+      "id": "R2",
+      "polygon": [
+        [
+          281370.0,
+          2765415.0
+        ],
+        [
+          281410.0,
+          2765415.0
+        ],
+        [
+          281410.0,
+          2765445.0
+        ],
+        [
+          281370.0,
+          2765445.0
+        ]
+      ],
+      "landuse": "mixed_residential",
+      "outlet_node": "CB8"
+    },
+    {
+      "id": "R3",
+      "polygon": [
+        [
+          281330.0,
+          2765465.0
+        ],
+        [
+          281390.0,
+          2765465.0
+        ],
+        [
+          281390.0,
+          2765485.0
+        ],
+        [
+          281330.0,
+          2765485.0
+        ]
+      ],
+      "landuse": "mixed_residential",
+      "outlet_node": "CB3"
+    },
+    {
+      "id": "G1",
+      "polygon": [
+        [
+          281300.0,
+          2765460.0
+        ],
+        [
+          281330.0,
+          2765460.0
+        ],
+        [
+          281330.0,
+          2765500.0
+        ],
+        [
+          281300.0,
+          2765500.0
+        ]
+      ],
+      "landuse": "park_green",
+      "outlet_node": "CB5"
+    },
+    {
+      "id": "G2",
+      "polygon": [
+        [
+          281390.0,
+          2765460.0
+        ],
+        [
+          281420.0,
+          2765460.0
+        ],
+        [
+          281420.0,
+          2765500.0
+        ],
+        [
+          281390.0,
+          2765500.0
+        ]
+      ],
+      "landuse": "park_green",
+      "outlet_node": "CB2"
+    },
+    {
+      "id": "P1",
+      "polygon": [
+        [
+          281300.0,
+          2765400.0
+        ],
+        [
+          281360.0,
+          2765400.0
+        ],
+        [
+          281360.0,
+          2765445.0
+        ],
+        [
+          281350.0,
+          2765445.0
+        ],
+        [
+          281350.0,
+          2765415.0
+        ],
+        [
+          281310.0,
+          2765415.0
+        ],
+        [
+          281310.0,
+          2765445.0
+        ],
+        [
+          281300.0,
+          2765445.0
+        ]
+      ],
+      "landuse": "concrete_asphalt",
+      "outlet_node": "CB7"
+    },
+    {
+      "id": "P2",
+      "polygon": [
+        [
+          281360.0,
+          2765400.0
+        ],
+        [
+          281420.0,
+          2765400.0
+        ],
+        [
+          281420.0,
+          2765445.0
+        ],
+        [
+          281410.0,
+          2765445.0
+        ],
+        [
+          281410.0,
+          2765415.0
+        ],
+        [
+          281370.0,
+          2765415.0
+        ],
+        [
+          281370.0,
+          2765445.0
+        ],
+        [
+          281360.0,
+          2765445.0
+        ]
+      ],
+      "landuse": "concrete_asphalt",
+      "outlet_node": "CB8"
+    },
+    {
+      "id": "P3",
+      "polygon": [
+        [
+          281300.0,
+          2765445.0
+        ],
+        [
+          281360.0,
+          2765445.0
+        ],
+        [
+          281360.0,
+          2765460.0
+        ],
+        [
+          281300.0,
+          2765460.0
+        ]
+      ],
+      "landuse": "concrete_asphalt",
+      "outlet_node": "CB6"
+    },
+    {
+      "id": "P4",
+      "polygon": [
+        [
+          281360.0,
+          2765445.0
+        ],
+        [
+          281420.0,
+          2765445.0
+        ],
+        [
+          281420.0,
+          2765460.0
+        ],
+        [
+          281360.0,
+          2765460.0
+        ]
+      ],
+      "landuse": "concrete_asphalt",
+      "outlet_node": "CB4"
+    },
+    {
+      "id": "P5",
+      "polygon": [
+        [
+          281330.0,
+          2765460.0
+        ],
+        [
+          281390.0,
+          2765460.0
+        ],
+        [
+          281390.0,
+          2765465.0
+        ],
+        [
+          281330.0,
+          2765465.0
+        ]
+      ],
+      "landuse": "concrete_asphalt",
+      "outlet_node": "CB3"
+    },
+    {
+      "id": "P6",
+      "polygon": [
+        [
+          281330.0,
+          2765485.0
+        ],
+        [
+          281390.0,
+          2765485.0
+        ],
+        [
+          281390.0,
+          2765500.0
+        ],
+        [
+          281330.0,
+          2765500.0
+        ]
+      ],
+      "landuse": "concrete_asphalt",
+      "outlet_node": "CB1"
+    }
+  ],
+  "storage": {
+    "id": "B1筏基滯洪",
+    "type": "raft",
+    "polygon": [
+      [
+        281314.0,
+        2765418.0
+      ],
+      [
+        281346.0,
+        2765418.0
+      ],
+      [
+        281346.0,
+        2765442.0
+      ],
+      [
+        281314.0,
+        2765442.0
+      ]
+    ],
+    "cells": [
+      [
+        [
+          281314.0,
+          2765418.0
+        ],
+        [
+          281330.0,
+          2765418.0
+        ],
+        [
+          281330.0,
+          2765430.0
+        ],
+        [
+          281314.0,
+          2765430.0
+        ]
+      ],
+      [
+        [
+          281330.0,
+          2765418.0
+        ],
+        [
+          281346.0,
+          2765418.0
+        ],
+        [
+          281346.0,
+          2765430.0
+        ],
+        [
+          281330.0,
+          2765430.0
+        ]
+      ],
+      [
+        [
+          281314.0,
+          2765430.0
+        ],
+        [
+          281330.0,
+          2765430.0
+        ],
+        [
+          281330.0,
+          2765442.0
+        ],
+        [
+          281314.0,
+          2765442.0
+        ]
+      ],
+      [
+        [
+          281330.0,
+          2765430.0
+        ],
+        [
+          281346.0,
+          2765430.0
+        ],
+        [
+          281346.0,
+          2765442.0
+        ],
+        [
+          281330.0,
+          2765442.0
+        ]
+      ]
+    ],
+    "effective_depth": 0.81,
+    "inlet_node": "SI1",
+    "outlet_node": "OW1",
+    "outlet_well_polygon": [
+      [
+        281344.0,
+        2765418.5
+      ],
+      [
+        281345.5,
+        2765418.5
+      ],
+      [
+        281345.5,
+        2765420.0
+      ],
+      [
+        281344.0,
+        2765420.0
+      ]
+    ],
+    "drain_mode": "pump",
+    "bottom_el": 116.2,
+    "max_water_el": 117.01,
+    "top_el": 117.6,
+    "overflow_el": 119.93,
+    "overflow_at": "inlet_well",
+    "pump_start_el": 116.45,
+    "pump_stop_el": 116.2,
+    "pump_q_cms": 0.159,
+    "inflow_invert_el": 117.01,
+    "pump_outlet_invert_el": 120.54,
+    "overflow_pipe_invert_el": 119.81,
+    "beam_width": 0.4
+  },
+  "existing_drains": [
+    {
+      "id": "EX9",
+      "name": "既有道路側溝",
+      "points": [
+        {
+          "x": 281425.0,
+          "y": 2765398.5,
+          "top_el": 120.25,
+          "invert_el": 119.05
+        },
+        {
+          "x": 281295.0,
+          "y": 2765398.5,
+          "top_el": 120.19,
+          "invert_el": 118.99
+        }
+      ],
+      "section": {
+        "type": "u_ditch",
+        "w": 0.8,
+        "h": 1.2
+      },
+      "design_water_depth_m": 0.75
+    }
+  ],
+  "road_centerline_els": [
+    {
+      "x": 281295.0,
+      "y": 2765394.0,
+      "el": 120.96
+    },
+    {
+      "x": 281425.0,
+      "y": 2765394.0,
+      "el": 121.04
+    }
+  ],
+  "calc": {
+    "overflow_weir": {
+      "width_m": 2.2,
+      "head_m": 0.25
+    }
+  },
+  "detail_defaults": {
+    "raft": {
+      "scale": 100
+    }
+  },
+  "scales": {
+    "plan": 300,
+    "catchment": 400,
+    "profile_h": 200,
+    "profile_v": 50,
+    "profile_outlet_h": 100,
+    "profile_outlet_v": 50
+  },
+  "sheet": {
+    "size": "A1",
+    "title_block": {
+      "project": "桃園區某集合住宅社區新建工程排水計畫（合成範例）",
+      "drawing_no": "DL",
+      "date": "115.11.05",
+      "designer": "",
+      "checker": ""
+    },
+    "north_arrow": true,
+    "show_scale_bar": true
+  },
+  "drawing_nos": {
+    "plan": "DL-01",
+    "catchment": "DL-02",
+    "profile": "DL-03",
+    "profile_outlet": "DL-04",
+    "detail": "DL-05"
+  }
+}

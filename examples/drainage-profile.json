@@ -1,0 +1,35 @@
+{
+  "kind": "profile",
+  "title": "S2 排水支線縱斷面圖",
+  "line_name": "S2 排水支線",
+  "h_scale": 100,
+  "v_scale": 25,
+  "nodes": [
+    {"station_m": 0.0,  "label": "IN1",   "kind": "inlet",      "ground_el": 45.60, "invert_el": 44.95, "top_el": 45.35, "road_center_el": 45.70},
+    {"station_m": 9.5,  "label": "MH-A",  "kind": "manhole",    "ground_el": 45.52, "invert_el": 44.86, "top_el": 45.26, "road_center_el": 45.61},
+    {"station_m": 21.0, "label": "放流井", "kind": "outlet_pit", "ground_el": 45.40, "invert_el": 44.71, "road_center_el": 45.50},
+    {"station_m": 27.0, "label": "道路側溝", "kind": "outfall",   "ground_el": 45.30, "invert_el": 44.66, "road_center_el": 45.41}
+  ],
+  "segments": [
+    {"section": "U型溝 W30×H40", "size_m": 0.40, "n": 0.016},
+    {"section": "U型溝 W30×H40", "size_m": 0.40, "n": 0.016},
+    {"section": "PVC D250", "size_m": 0.25, "n": 0.011}
+  ],
+  "levels": [
+    {"station_m": 0.0,  "el": 45.10, "label": "進水管", "kind": "pipe_in"},
+    {"station_m": 21.0, "el": 45.05, "label": "溢流高程", "kind": "overflow"},
+    {"station_m": 21.0, "el": 44.71, "label": "放流管", "kind": "pipe_out"}
+  ],
+  "sheet": {
+    "size": "A3",
+    "title_block": {
+      "project": "範例 排水縱斷面（合成資料）",
+      "drawing_no": "EX-01",
+      "date": "",
+      "designer": "",
+      "checker": ""
+    },
+    "north_arrow": false,
+    "show_scale_bar": true
+  }
+}

@@ -1,0 +1,5 @@
+本目錄所有圖資皆為【合成資料 SYNTHETIC】，由 tools/make_fixtures_site.py 以固定座標產生，
+不是國土測繪中心或任何機關的真實地籍 / 使用分區圖，僅供 verifier 與 agent 評估使用。
+- cadastre.shp        假「測試段（段號 0001）」，EPSG:3826
+- zoning.shp          住宅區 / 商業區，故意存成 EPSG:4326
+- cadastre_twd67.shp  同一份地籍的 TWD67（EPSG:3828）壞檔，crs_check 必須紅燈

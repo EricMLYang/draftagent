@@ -1,0 +1,80 @@
+# 桃園市雨水下水道送審案件：各附圖比例尺門檻
+#
+# !! 體驗版草稿 !!
+# 數值轉錄自 docs/research/2026-10-17-taoyuan-drainage.md §2a（研究 sub-agent 彙整），
+# 尚未由人工開啟檢核表原檔逐項核對。verified: false 期間，profile_check 等 verifier
+# 一律輸出 WARNING。人工確認後請：
+#   1. 開啟 source_url 原檔，逐項對照 max_denominator
+#   2. 填寫 as_of（檢核表版本日期；原檔未標日期則註明）
+#   3. 將 verified 改為 true，並在 verified_by / verified_on 留紀錄
+#
+# 解讀規則：檢核表寫「S≧1/N」= 比例尺不得小於 1/N，即**比例分母必須 ≤ N**
+# （1/200 合格、1/100 合格、1/300 不合格）。
+
+verified: false
+note: "數值轉錄自研究紀錄，尚未人工開啟檢核表原檔核對；as_of 未確認"
+verified_by: null
+verified_on: null
+
+source: &src "桃園市雨水下水道相關設施送審案件排水報告內容檢核表"
+source_url: &url "https://sewergis.tycg.gov.tw/Content/雨水申請案/排水報告內容檢核表.odt"
+retrieved_on: "2026-10-17"
+
+# key → 圖說；max_denominator：比例分母上限（S ≥ 1/max_denominator）
+scales:
+  location_map:
+    name: 地理位置圖
+    max_denominator: 1000
+    source: *src
+    source_url: *url
+    as_of: null
+  cadastral_map:
+    name: 地籍配置圖
+    max_denominator: 500
+    source: *src
+    source_url: *url
+    as_of: null
+  existing_drainage_map:
+    name: 基地附近排水系統現況圖
+    max_denominator: 1000
+    source: *src
+    source_url: *url
+    as_of: null
+  drainage_plan:
+    name: 排水系統平面設計圖
+    max_denominator: 300
+    source: *src
+    source_url: *url
+    as_of: null
+  drainage_profile:
+    name: 排水系統縱斷面圖
+    max_denominator: 200
+    # 檢核表此項只規定比例尺 S；縱斷面垂直比例（誇張）無門檻，本檔視為水平比例
+    applies_to: horizontal
+    source: *src
+    source_url: *url
+    as_of: null
+  drainage_cross_section:
+    name: 排水系統橫斷面圖
+    max_denominator: 500
+    source: *src
+    source_url: *url
+    as_of: null
+  drainage_details:
+    name: 排水系統各部詳圖
+    max_denominator: 500
+    source: *src
+    source_url: *url
+    as_of: null
+  catchment_map:
+    name: 排水系統集水區分析圖
+    max_denominator: 500
+    source: *src
+    source_url: *url
+    as_of: null
+  site_drainage_layout:
+    name: 基地內排水配置圖說
+    max_denominator: 300
+    source: *src
+    source_url: *url
+    as_of: null

@@ -1,0 +1,383 @@
+{
+  "kind": "drainage-plan",
+  "units": "m",
+  "crs": "EPSG:3826",
+  "title": "集合住宅新建工程排水系統（合成範例）",
+  "project": {
+    "name": "桃園區某集合住宅新建工程（合成範例）",
+    "district": "桃園區",
+    "location": "桃園市桃園區（合成座標，非真實基地）"
+  },
+  "site_boundary": [
+    [
+      279850.0,
+      2767120.0
+    ],
+    [
+      279904.0,
+      2767120.0
+    ],
+    [
+      279904.0,
+      2767145.0
+    ],
+    [
+      279892.0,
+      2767155.0
+    ],
+    [
+      279850.0,
+      2767155.0
+    ]
+  ],
+  "building_footprints": [
+    [
+      [
+        279856.0,
+        2767134.0
+      ],
+      [
+        279888.0,
+        2767134.0
+      ],
+      [
+        279888.0,
+        2767151.0
+      ],
+      [
+        279856.0,
+        2767151.0
+      ]
+    ]
+  ],
+  "nodes": [
+    {
+      "id": "CB1",
+      "kind": "catch_basin",
+      "x": 279853.0,
+      "y": 2767152.0,
+      "ground_el": 124.53,
+      "invert_el": 124.04
+    },
+    {
+      "id": "CB2",
+      "kind": "catch_basin",
+      "x": 279853.0,
+      "y": 2767129.0,
+      "ground_el": 124.07,
+      "invert_el": 123.76
+    },
+    {
+      "id": "MH1",
+      "kind": "manhole",
+      "x": 279868.0,
+      "y": 2767129.0,
+      "ground_el": 124.04,
+      "invert_el": 123.61
+    },
+    {
+      "id": "CB3",
+      "kind": "catch_basin",
+      "x": 279898.0,
+      "y": 2767141.0,
+      "ground_el": 124.22,
+      "invert_el": 123.56
+    },
+    {
+      "id": "SI1",
+      "kind": "storage_inlet",
+      "x": 279889.0,
+      "y": 2767126.0,
+      "ground_el": 123.94,
+      "invert_el": 123.35
+    },
+    {
+      "id": "OW1",
+      "kind": "outlet_well",
+      "x": 279896.5,
+      "y": 2767120.8,
+      "ground_el": 123.82,
+      "invert_el": 122.6
+    },
+    {
+      "id": "OF1",
+      "kind": "outfall",
+      "x": 279896.5,
+      "y": 2767119.0,
+      "ground_el": 123.55,
+      "invert_el": 122.58
+    }
+  ],
+  "links": [
+    {
+      "id": "L1",
+      "from": "CB1",
+      "to": "CB2",
+      "section": {
+        "type": "pipe",
+        "d": 0.15
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    },
+    {
+      "id": "L2",
+      "from": "CB2",
+      "to": "MH1",
+      "section": {
+        "type": "pipe",
+        "d": 0.15
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    },
+    {
+      "id": "L3",
+      "from": "MH1",
+      "to": "SI1",
+      "section": {
+        "type": "pipe",
+        "d": 0.2
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    },
+    {
+      "id": "L4",
+      "from": "CB3",
+      "to": "SI1",
+      "section": {
+        "type": "pipe",
+        "d": 0.2
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    },
+    {
+      "id": "L5",
+      "from": "OW1",
+      "to": "OF1",
+      "section": {
+        "type": "pipe",
+        "d": 0.2
+      },
+      "material": "plastic_frp_pipe",
+      "n_override": 0.013
+    }
+  ],
+  "subcatchments": [
+    {
+      "id": "A1",
+      "polygon": [
+        [
+          279856.0,
+          2767134.0
+        ],
+        [
+          279888.0,
+          2767134.0
+        ],
+        [
+          279888.0,
+          2767151.0
+        ],
+        [
+          279856.0,
+          2767151.0
+        ]
+      ],
+      "landuse": "mixed_residential",
+      "outlet_node": "SI1"
+    },
+    {
+      "id": "A2",
+      "polygon": [
+        [
+          279850.0,
+          2767120.0
+        ],
+        [
+          279856.0,
+          2767120.0
+        ],
+        [
+          279856.0,
+          2767155.0
+        ],
+        [
+          279850.0,
+          2767155.0
+        ]
+      ],
+      "landuse": "concrete_asphalt",
+      "outlet_node": "CB1"
+    },
+    {
+      "id": "A3",
+      "polygon": [
+        [
+          279888.0,
+          2767134.0
+        ],
+        [
+          279888.0,
+          2767151.0
+        ],
+        [
+          279856.0,
+          2767151.0
+        ],
+        [
+          279856.0,
+          2767155.0
+        ],
+        [
+          279892.0,
+          2767155.0
+        ],
+        [
+          279904.0,
+          2767145.0
+        ],
+        [
+          279904.0,
+          2767134.0
+        ]
+      ],
+      "landuse": "park_green",
+      "outlet_node": "CB3"
+    },
+    {
+      "id": "A4",
+      "polygon": [
+        [
+          279856.0,
+          2767120.0
+        ],
+        [
+          279904.0,
+          2767120.0
+        ],
+        [
+          279904.0,
+          2767134.0
+        ],
+        [
+          279856.0,
+          2767134.0
+        ]
+      ],
+      "landuse": "concrete_asphalt",
+      "outlet_node": "SI1"
+    }
+  ],
+  "storage": {
+    "id": "地面滯洪池",
+    "type": "surface",
+    "polygon": [
+      [
+        279890.5,
+        2767121.5
+      ],
+      [
+        279902.0,
+        2767121.5
+      ],
+      [
+        279902.0,
+        2767133.5
+      ],
+      [
+        279890.5,
+        2767133.5
+      ]
+    ],
+    "effective_depth": 0.7,
+    "inlet_node": "SI1",
+    "outlet_node": "OW1",
+    "drain_mode": "gravity",
+    "bottom_el": 122.61,
+    "max_water_el": 123.31,
+    "top_el": 123.65,
+    "orifice_invert_el": 122.61,
+    "overflow_el": 123.31,
+    "overflow_at": "storage",
+    "inflow_invert_el": 123.35
+  },
+  "existing_drains": [
+    {
+      "id": "EX2",
+      "name": "既有道路側溝",
+      "points": [
+        {
+          "x": 279908.0,
+          "y": 2767118.5,
+          "top_el": 123.37,
+          "invert_el": 122.17
+        },
+        {
+          "x": 279846.0,
+          "y": 2767118.5,
+          "top_el": 123.31,
+          "invert_el": 122.11
+        }
+      ],
+      "section": {
+        "type": "u_ditch",
+        "w": 0.6,
+        "h": 1.2
+      },
+      "design_water_depth_m": 0.4
+    }
+  ],
+  "road_centerline_els": [
+    {
+      "x": 279846.0,
+      "y": 2767114.5,
+      "el": 123.47
+    },
+    {
+      "x": 279908.0,
+      "y": 2767114.5,
+      "el": 123.53
+    }
+  ],
+  "calc": {
+    "outlet": {
+      "type": "circ_orifice",
+      "diameter_m": 0.12,
+      "design_head_m": 0.7
+    },
+    "overflow_weir": {
+      "width_m": 1.0,
+      "head_m": 0.12
+    }
+  },
+  "scales": {
+    "plan": 200,
+    "catchment": 300,
+    "profile_h": 200,
+    "profile_v": 50,
+    "profile_outlet_h": 50,
+    "profile_outlet_v": 50
+  },
+  "sheet": {
+    "size": "A1",
+    "title_block": {
+      "project": "桃園區某集合住宅新建工程排水計畫（合成範例）",
+      "drawing_no": "CH",
+      "date": "115.10.08",
+      "designer": "",
+      "checker": ""
+    },
+    "north_arrow": true,
+    "show_scale_bar": true
+  },
+  "drawing_nos": {
+    "plan": "CH-01",
+    "catchment": "CH-02",
+    "profile": "CH-03",
+    "profile_outlet": "CH-04",
+    "detail": "CH-05"
+  }
+}

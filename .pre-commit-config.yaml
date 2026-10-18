@@ -1,0 +1,31 @@
+# pre-commit install            # 之後每次 commit 自動跑
+# pre-commit run --all-files    # 手動全跑
+# pre-commit run --hook-stage manual ruff-format --all-files   # format（目前為 manual，見下）
+exclude: ^(runs/|\.venv/)
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.1  # 與 CI uvx ruff@0.17.1 一致
+    hooks:
+      - id: ruff
+        args: [--fix]
+      # TODO: 既有模組尚未全部 format（其他分支正在改），全部 format 後移除 stages 改為預設
+      - id: ruff-format
+        stages: [manual]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+        exclude: '(\.(dxf|shp|shx|dbf|prj|cpg|tif|tiff|gpkg|png|pdf|ifc)$)|(^tests/.*/(input|expected)/)'
+      - id: check-added-large-files
+        args: [--maxkb=2048]
+
+  - repo: local
+    hooks:
+      - id: check-no-client-ids
+        name: check no client identifiers (地號 / 公司 / 案號)
+        entry: python3 scripts/check_no_client_ids.py
+        language: system
+        types: [text]
+        pass_filenames: true

@@ -1,0 +1,48 @@
+{
+  "task": "1-3",
+  "crs": "EPSG:3826",
+  "cell_size_m": 20.0,
+  "band_slopes_pct": [
+    3.0,
+    10.0,
+    22.0,
+    35.0,
+    47.0,
+    70.0
+  ],
+  "classes_yaml_verified": false,
+  "boundary": "upper_inclusive",
+  "site_area_vector_m2": 2834550.0,
+  "site_area_pixel_m2": 2833600.0,
+  "classes": {
+    "0": {
+      "pixel_count": 0,
+      "area_m2": 0.0
+    },
+    "1": {
+      "pixel_count": 837,
+      "area_m2": 334800.0
+    },
+    "2": {
+      "pixel_count": 1381,
+      "area_m2": 552400.0
+    },
+    "3": {
+      "pixel_count": 1479,
+      "area_m2": 591600.0
+    },
+    "4": {
+      "pixel_count": 1311,
+      "area_m2": 524400.0
+    },
+    "5": {
+      "pixel_count": 1233,
+      "area_m2": 493200.0
+    },
+    "6": {
+      "pixel_count": 843,
+      "area_m2": 337200.0
+    }
+  },
+  "note": "解析解（不經 draftagent.hydro.slope）；門檻取自 slope_classes.yaml 草稿值"
+}

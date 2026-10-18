@@ -1,0 +1,8 @@
+{
+  "dtm_path": "examples/data/slope/dtm.tif",
+  "site_path": "examples/data/slope/site.gpkg",
+  "site_layer": "site",
+  "output_raster": "runs/example-slope/slope_classes.tif",
+  "output_gpkg": "runs/example-slope/slope_classes.gpkg",
+  "output_csv": "runs/example-slope/slope_classes.csv"
+}

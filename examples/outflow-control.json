@@ -1,0 +1,58 @@
+{
+  "kind": "outflow_control",
+  "title": "範例：1.5 ha 都市計畫區新建廠房出流管制（合成資料）",
+  "site": {
+    "area_ha": 1.5,
+    "in_urban_plan": true,
+    "is_new_building": true,
+    "gravity_drainage": true,
+    "outfall_q10_capacity_ok": true,
+    "use_simple_check": false
+  },
+  "horner": {
+    "station": "範例站（非實際測站）",
+    "source_note": "範例用，非實際測站：係數為合成值；實案須由工程師依治理規劃報告或鄰近雨量站分析提供",
+    "params": {
+      "2":  {"a": 1650.0, "b": 25.0, "c": 0.72},
+      "5":  {"a": 2380.0, "b": 25.0, "c": 0.72},
+      "10": {"a": 2860.0, "b": 25.0, "c": 0.72}
+    }
+  },
+  "pre": {
+    "subareas": [
+      {"name": "草地（開發前）", "area_ha": 1.5, "scs_class": 8, "soil_group": "C"}
+    ],
+    "flow_path": {"overland_length_m": 160.0, "overland_slope_pct": 1.5}
+  },
+  "post": {
+    "subareas": [
+      {"name": "廠房屋頂及鋪面", "area_ha": 1.1, "scs_class": 17, "soil_group": "C"},
+      {"name": "綠帶", "area_ha": 0.4, "scs_class": 8, "soil_group": "C"}
+    ],
+    "flow_path": {
+      "inlet_time_min": 5.0,
+      "channels": [{"length_m": 150.0, "n": 0.015, "R_m": 0.12, "S": 0.004}]
+    }
+  },
+  "detention": {
+    "layers": [
+      {"elev_m": 50.0, "area_m2": 860.0},
+      {"elev_m": 50.5, "area_m2": 920.0},
+      {"elev_m": 51.0, "area_m2": 980.0},
+      {"elev_m": 51.5, "area_m2": 1040.0},
+      {"elev_m": 52.0, "area_m2": 1100.0},
+      {"elev_m": 52.5, "area_m2": 1160.0}
+    ],
+    "freeboard_m": 0.3
+  },
+  "outlet": {
+    "orifices": [
+      {"name": "OR1 低水孔口", "type": "vertical_circular", "invert_m": 50.0, "diameter_m": 0.25},
+      {"name": "OR2 中水孔口", "type": "vertical_rect", "invert_m": 51.1, "width_m": 0.5, "height_m": 0.25}
+    ],
+    "weirs": [
+      {"name": "W1 溢流堰", "crest_m": 51.9, "length_m": 2.0, "crest_width_m": 0.3}
+    ]
+  },
+  "tailwater": {"mode": "free"}
+}

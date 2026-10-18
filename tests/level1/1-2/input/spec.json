@@ -1,0 +1,15 @@
+{
+  "parcels": [
+    {
+      "section_name": "測試段",
+      "section_code": "0001",
+      "land_numbers": ["12", "12-1", "13"]
+    }
+  ],
+  "cadastre_path": "tests/level1/1-2/input/cadastre.shp",
+  "zoning_path": "tests/level1/1-2/input/zoning.shp",
+  "zoning_field": "分區",
+  "target_crs": "EPSG:3826",
+  "output_path": "runs/level1-1-2/site.gpkg",
+  "expected_area_m2": 6762.5
+}

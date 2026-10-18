@@ -1,0 +1,93 @@
+# DraftAgent 製圖標準：圖層表（名稱 / 顏色 / 線型 / 線寬 / 出圖）
+#
+# !! 製圖慣例，不是法規數值 !!
+# - 圖層命名採 AIA/NCS 風格前綴（A 建築、C 土木、H 水利、S 結構、X 圖框 / 參考），
+#   非台灣官方標準（docs/research/2026-10-17-taoyuan-drainage.md §3 查無公共工程委員會 /
+#   水利署 CAD 圖層標準）。
+# - 線寬為業界常見慣例，非法規數值；可依事務所 CAD 標準調整，但改了要同步跑
+#   `pytest tests/test_standards.py` 與各圖種 verifier。
+#
+# 欄位
+#   color      ACI 顏色（1 紅 2 黃 3 綠 4 青 5 藍 6 洋紅 7 白/黑 8 灰）
+#   linetype   CONTINUOUS / DASHED / CENTER / PHANTOM / DASHDOT / DOT …（ezdxf setup=True 內建），
+#              或下方 linetypes 區自訂者（DA-*）；比對不分大小寫
+#   lineweight ezdxf 單位 1/100 mm（50 = 0.50 mm），只能用 DXF 合法值
+#              0 5 9 13 15 18 20 25 30 35 40 50 53 60 70 80 90 100 106 120 140 158 200 211
+#   plot       是否出圖
+#   discipline A / C / H / S / X
+#
+# 線寬原則（convention）：結構 / 牆輪廓 0.50、剖面切到的混凝土 0.50、管溝 0.35、
+# 既有設施 0.25、文字 / 標註 0.18–0.25、格線 / 輔助 0.13、圖框粗框 0.70、圖簽框 0.35。
+# renderer 個別實體可另以 entity lineweight 覆寫（例：圖框紙邊細線、縱斷面溝底粗線），
+# 本表規範的是「圖層預設值」。
+
+kind: convention
+source: "DraftAgent 內部製圖慣例（AIA/NCS 風格前綴；非台灣官方標準、非法規數值）"
+as_of: "2026-10-17"
+
+# 文字可讀性下限（verify/standards_check.py、verify/legibility_check.py 使用）。
+# 印出字高 = paperspace 字高；modelspace 字高 × viewport 比例，或 ÷ 出圖比例分母（平面圖 print_scale）。
+# 2.0 mm 是製圖慣例的最小可讀字高（renderer 預設印出 2.5 mm），不是法規數值（CNS 3 原文未取得）。
+text:
+  kind: convention
+  min_print_height_mm: 2.0
+  source: "DraftAgent 內部製圖慣例（常見最小字高 2.0–2.5 mm）；非法規數值"
+
+# 自訂線型（圖紙 mm 定義：[總長, 線, −空白, …]）。目前由 render/drainage_plan.py 使用；
+# apply_layers 遇到 doc 缺少時依此建立。
+linetypes:
+  DA-DASH: {pattern: [4.5, 3.0, -1.5], description: "Dashed __ __ __"}
+  DA-CHAIN: {pattern: [12.0, 8.0, -1.5, 1.0, -1.5], description: "Chain ____ _ ____"}
+  DA-CENTER: {pattern: [16.0, 11.0, -2.0, 1.0, -2.0], description: "Center _____ _ _____"}
+
+layers:
+  # ---------------------------------------------------------------- A 建築（render/dxf.py）
+  A-WALL: {description: 牆輪廓（封閉多段線）, color: 7, linetype: CONTINUOUS, lineweight: 50, plot: true, discipline: A}
+  A-DOOR: {description: 門扇線與開啟弧, color: 3, linetype: CONTINUOUS, lineweight: 25, plot: true, discipline: A}
+  A-WIND: {description: 窗框與中線, color: 4, linetype: CONTINUOUS, lineweight: 25, plot: true, discipline: A}
+  A-DIMS: {description: 尺寸標註, color: 1, linetype: CONTINUOUS, lineweight: 18, plot: true, discipline: A}
+  A-TEXT: {description: 房名等文字, color: 2, linetype: CONTINUOUS, lineweight: 18, plot: true, discipline: A}
+  A-BLDG: {description: 建物外廓（排水平面圖底圖）, color: 8, linetype: CONTINUOUS, lineweight: 25, plot: true, discipline: A}
+
+  # ---------------------------------------------------------------- C 土木（render/drainage_plan.py）
+  C-PROP: {description: 基地境界線, color: 1, linetype: DA-CHAIN, lineweight: 35, plot: true, discipline: C}
+  C-STRM: {description: 新設排水管溝, color: 5, linetype: CONTINUOUS, lineweight: 35, plot: true, discipline: C}
+  C-STRM-EXST: {description: 既有排水設施, color: 3, linetype: DA-DASH, lineweight: 25, plot: true, discipline: C}
+  C-STRM-NODE: {description: 人孔 / 集水井 / 陰井符號, color: 7, linetype: CONTINUOUS, lineweight: 35, plot: true, discipline: C}
+  C-STRM-FLOW: {description: 排水流向箭頭, color: 5, linetype: CONTINUOUS, lineweight: 25, plot: true, discipline: C}
+  C-STRM-TEXT: {description: 管溝 / 節點標註文字, color: 7, linetype: CONTINUOUS, lineweight: 18, plot: true, discipline: C}
+  C-STRM-STOR: {description: 滯洪 / 貯集設施範圍, color: 4, linetype: CONTINUOUS, lineweight: 25, plot: true, discipline: C}
+  C-ROAD: {description: 道路中心線 / 路緣, color: 8, linetype: DA-CENTER, lineweight: 18, plot: true, discipline: C}
+  C-ROAD-TEXT: {description: 道路名稱與高程文字, color: 8, linetype: CONTINUOUS, lineweight: 18, plot: true, discipline: C}
+  C-CTCH: {description: 集水分區界線, color: 6, linetype: DA-DASH, lineweight: 25, plot: true, discipline: C}
+  C-CTCH-TEXT: {description: 集水分區標註文字, color: 6, linetype: CONTINUOUS, lineweight: 18, plot: true, discipline: C}
+  C-CTCH-FLOW: {description: 集水區流向箭頭, color: 6, linetype: CONTINUOUS, lineweight: 25, plot: true, discipline: C}
+  C-LGND: {description: 圖例, color: 7, linetype: CONTINUOUS, lineweight: 18, plot: true, discipline: C}
+  C-TABL: {description: 數量 / 計算表格, color: 7, linetype: CONTINUOUS, lineweight: 18, plot: true, discipline: C}
+  C-TOPO: {description: 地形等高線（保留；CLAUDE.md 列名，尚無 renderer 使用）, color: 8, linetype: CONTINUOUS, lineweight: 13, plot: true, discipline: C}
+
+  # ---------------------------------------------------------------- H 水利（render/profile.py、render/detail.py）
+  H-PROF: {description: 縱斷面地面線 / 溝底 / 溝頂 / 井框, color: 7, linetype: CONTINUOUS, lineweight: 35, plot: true, discipline: H}
+  H-PROF-WL: {description: 縱斷面水位線, color: 5, linetype: DASHED, lineweight: 25, plot: true, discipline: H}
+  H-GRID: {description: 高程尺 / 格線 / 樁號格, color: 8, linetype: CONTINUOUS, lineweight: 13, plot: true, discipline: H}
+  H-TABL: {description: 縱斷面表格帶, color: 7, linetype: CONTINUOUS, lineweight: 18, plot: true, discipline: H}
+  H-STRC: {description: 結構輪廓（剖面切到的混凝土）, color: 7, linetype: CONTINUOUS, lineweight: 50, plot: true, discipline: H}
+  H-HATC: {description: 材料剖面填充, color: 8, linetype: CONTINUOUS, lineweight: 13, plot: true, discipline: H}
+  H-HIDN: {description: 隱藏線 / 背後輪廓, color: 8, linetype: DASHED, lineweight: 25, plot: true, discipline: H}
+  H-WATR: {description: 詳圖水位線與 ▽, color: 5, linetype: DASHED, lineweight: 25, plot: true, discipline: H}
+  H-PIPE: {description: 管線與閥件符號, color: 7, linetype: CONTINUOUS, lineweight: 35, plot: true, discipline: H}
+  H-RBAR: {description: 鋼筋示意, color: 1, linetype: CONTINUOUS, lineweight: 25, plot: true, discipline: H}
+  H-GRND: {description: 地面線, color: 7, linetype: CONTINUOUS, lineweight: 25, plot: true, discipline: H}
+  H-CL: {description: 中心線 / 剖切線, color: 1, linetype: CENTER, lineweight: 13, plot: true, discipline: H}
+  H-DIMS: {description: 尺寸標註, color: 7, linetype: CONTINUOUS, lineweight: 18, plot: true, discipline: H}
+  H-TEXT: {description: 註記 / 引線 / 圖名 / 比例文字, color: 7, linetype: CONTINUOUS, lineweight: 18, plot: true, discipline: H}
+
+  # ---------------------------------------------------------------- S 結構
+  S-GRID: {description: 結構柱線格線（保留；CLAUDE.md 列名，尚無 renderer 使用）, color: 8, linetype: CENTER, lineweight: 13, plot: true, discipline: S}
+
+  # ---------------------------------------------------------------- X 圖框 / 參考（render/sheet.py 等）
+  X-FRAME: {description: 圖框粗框 / 比例尺 / 指北針 / 圖名（紙邊細線由實體覆寫）, color: 8, linetype: CONTINUOUS, lineweight: 70, plot: true, discipline: X}
+  X-TTLB: {description: 圖簽（框 0.35；內部格線由實體覆寫為細線）, color: 7, linetype: CONTINUOUS, lineweight: 35, plot: true, discipline: X}
+  X-GRID: {description: 座標格線與刻度, color: 8, linetype: CONTINUOUS, lineweight: 13, plot: true, discipline: X}
+  X-TEXT: {description: 圖紙空間一般文字 / 附註, color: 7, linetype: CONTINUOUS, lineweight: 18, plot: true, discipline: X}
+  X-VPORT: {description: 視埠框（不出圖）, color: 8, linetype: CONTINUOUS, lineweight: 13, plot: false, discipline: X}

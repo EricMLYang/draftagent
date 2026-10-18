@@ -1,0 +1,26 @@
+{
+  "site_area_m2": 1680.0,
+  "district": "桃園區",
+  "subareas": [
+    {"name": "全基地", "area_m2": 1680.0, "landuse": "mixed_residential"}
+  ],
+  "storage": {
+    "type": "raft",
+    "cells": [
+      {"length_m": 5.0, "width_m": 4.5},
+      {"length_m": 5.0, "width_m": 4.5},
+      {"length_m": 5.0, "width_m": 4.5},
+      {"length_m": 5.0, "width_m": 4.5}
+    ],
+    "effective_depth_m": 1.0,
+    "outlet_well_area_m2": 0.0
+  },
+  "outlet": {"type": "circ_orifice", "diameter_m": 0.10, "design_head_m": 1.0},
+  "overflow_weir": {"width_m": 0.5, "head_m": 0.2},
+  "pipes": [
+    {"name": "P1", "diameter_m": 0.20, "material": "plastic_frp_pipe", "n_override": 0.013,
+     "slope": 0.01, "design_area_m2": 600.0},
+    {"name": "D1", "width_m": 0.30, "depth_m": 0.40, "material": "u_ditch_rc",
+     "slope": 0.01, "design_area_m2": 1080.0}
+  ]
+}

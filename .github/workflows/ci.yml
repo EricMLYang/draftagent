@@ -1,0 +1,87 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: pyproject.toml
+      - name: ruff check
+        run: uvx ruff@0.17.1 check --output-format=github .
+      # 新檔（scripts / property tests / conftest）強制 format；
+      # TODO: 既有模組尚有 ~14 檔未 format（其他分支正在改），全部 format 後改成 `ruff format --check .` 並移除 advisory step
+      - name: ruff format (strict, owned paths)
+        run: uvx ruff@0.17.1 format --check scripts tests/conftest.py tests/property
+      - name: ruff format (advisory, whole repo)
+        continue-on-error: true
+        run: uvx ruff@0.17.1 format --check .
+      - name: no client identifiers
+        run: python3 scripts/check_no_client_ids.py
+      - name: no eval answers in skills
+        run: python3 scripts/check_skill_leaks.py
+
+  test:
+    name: test (${{ matrix.os }}, py${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python }}
+          enable-cache: true
+          cache-dependency-glob: pyproject.toml
+      - name: CJK fonts (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q --no-install-recommends fonts-noto-cjk
+          fc-list :lang=zh family | head -5
+      - name: install
+        run: |
+          uv venv --python ${{ matrix.python }}
+          uv pip install -e ".[dev,ifc,report]"   # ifc：floor-plan 圖種的 IFC 輸出 / 讀回
+      - name: pytest
+        run: .venv/bin/pytest -q -n auto
+      - name: upload previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: previews-${{ matrix.os }}-py${{ matrix.python }}
+          path: runs/**/*.png
+          if-no-files-found: ignore
+          retention-days: 7
+
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: pyproject.toml
+      - run: uv venv && uv pip install -e .
+      - name: cli kinds
+        run: |
+          .venv/bin/python -m draftagent.cli kinds
+          .venv/bin/draftagent kinds > /dev/null

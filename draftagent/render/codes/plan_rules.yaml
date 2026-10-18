@@ -1,0 +1,37 @@
+# DraftAgent 平面配置慣例（floor-plan 圖種，verify/floorplan_check.py 使用）
+#
+# !! 製圖 / 配置慣例，不是法規數值，無法規意義 !!
+# - 本檔只放「用途分類」與 WARNING 級的配置提示。
+# - 結構性規則（房間不重疊、鋪滿室內、門在共用牆上、全部可由主入口到達、動線空間連通、
+#   下列 window_required 用途至少一扇窗）寫死在 verifier，為 ERROR，不能由本檔調降。
+# - 「至少一扇窗」只是結構規則（有沒有窗），**不是**採光面積比例；比例等法規數值必須另有
+#   draftagent/*/codes/*.yaml 且附來源才可使用，目前沒有 → 不檢查。
+# - 下列 warnings 的數值沒有外部來源（DraftAgent 內部慣例），只產生 WARNING，不得寫進報告當法規依據。
+
+kind: convention
+source: "DraftAgent 內部平面配置慣例；非法規數值、無法規意義、無外部來源"
+as_of: "2026-10-18"
+verified: false
+
+uses:
+  # 居室類：每間至少一扇窗（ERROR；結構規則，非採光比例）
+  window_required: [居室, 臥室, 客廳, 書房]
+  # 動線空間（走廊類）：若有多個，彼此須以門連通成一個連通子圖（ERROR）。
+  # 玄關不列入：玄關經客廳再進走廊是常見配置
+  circulation: [走廊]
+  bedroom: [臥室]
+  bathroom: [浴廁]
+
+warnings:
+  # 浴廁只能經由臥室進入（例：套房衛浴）→ WARNING（設計上可能是刻意的主臥套房）
+  bathroom_only_via_bedroom: true
+  # 房間淨寬（短向）低於此值 → WARNING（內部慣例，無來源）
+  min_clear_width_mm:
+    kind: convention
+    value: 900
+    source: "DraftAgent 內部慣例（無外部來源）；僅提示"
+  # 非動線空間的長寬比（外接矩形長邊 / 短邊）高於此值 → WARNING（內部慣例，無來源）
+  max_aspect_ratio:
+    kind: convention
+    value: 3.0
+    source: "DraftAgent 內部慣例（無外部來源）；僅提示"

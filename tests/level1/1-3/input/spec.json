@@ -1,0 +1,8 @@
+{
+  "dtm_path": "tests/level1/1-3/input/dtm.tif",
+  "site_path": "tests/level1/1-3/input/site.gpkg",
+  "site_layer": "site",
+  "output_raster": "runs/level1-1-3/slope_classes.tif",
+  "output_gpkg": "runs/level1-1-3/slope_classes.gpkg",
+  "output_csv": "runs/level1-1-3/slope_classes.csv"
+}

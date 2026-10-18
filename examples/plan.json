@@ -1,0 +1,15 @@
+{
+  "kind": "plan",
+  "units": "mm",
+  "title": "範例 書房平面圖",
+  "wall_thickness": 150,
+  "rooms": [
+    {"name": "書房", "rect": {"x": 0, "y": 0, "width": 4500, "depth": 3300}}
+  ],
+  "openings": [
+    {"type": "door", "side": "E", "offset": 600, "width": 800, "swing": "in", "hinge": "end"},
+    {"type": "window", "side": "N", "offset": 1350, "width": 1800}
+  ],
+  "dimensions": {"auto_overall": true, "offset": 600},
+  "print_scale": 50
+}

@@ -218,3 +218,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# DraftAgent：agent 暫存的 .py / .json spec（正式 spec 由 build 自動存到 runs/）
+work/
+
+# macOS
+.DS_Store
