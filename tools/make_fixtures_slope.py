@@ -26,7 +26,6 @@ import geopandas as gpd
 import numpy as np
 import rasterio
 import yaml
-from rasterio import features
 from rasterio.transform import from_origin
 from shapely.geometry import Polygon
 
@@ -119,9 +118,9 @@ def main() -> None:
     )
 
     cfg = yaml.safe_load(CLASSES_YAML.read_text(encoding="utf-8"))
-    mask = features.geometry_mask(
-        [site], out_shape=(NROWS, NCOLS), transform=transform, invert=True, all_touched=False
-    )
+    from draftagent.hydro.slope import site_mask  # 與 renderer / verifier 同一判斷，跨平台一致
+
+    mask = site_mask(site, transform, (NROWS, NCOLS))
     cls = classify_from_yaml(analytic_slope_pct(), cfg)
     per_class = {}
     for c in [0] + [c["class"] for c in cfg["classes"]]:

@@ -13,7 +13,7 @@
   "classes_yaml_verified": false,
   "boundary": "upper_inclusive",
   "site_area_vector_m2": 2834550.0,
-  "site_area_pixel_m2": 2833600.0,
+  "site_area_pixel_m2": 2833200.0,
   "classes": {
     "0": {
       "pixel_count": 0,
@@ -40,8 +40,8 @@
       "area_m2": 493200.0
     },
     "6": {
-      "pixel_count": 843,
-      "area_m2": 337200.0
+      "pixel_count": 842,
+      "area_m2": 336800.0
     }
   },
   "note": "解析解（不經 draftagent.hydro.slope）；門檻取自 slope_classes.yaml 草稿值"

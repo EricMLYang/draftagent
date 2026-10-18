@@ -331,7 +331,6 @@ def check_artifacts(
         res.error(f"缺分級 GeoTIFF 產物：{tif}")
         return res
     import rasterio
-    from rasterio import features
 
     with rasterio.open(tif) as src:
         arr = src.read(1)
@@ -373,7 +372,7 @@ def check_artifacts(
         if g.geometry is None or g.geometry.is_empty:
             got = np.zeros_like(mask)
         else:
-            got = features.geometry_mask([g.geometry], out_shape=arr.shape, transform=t_tr, invert=True)
+            got = site_mask(g.geometry, t_tr, arr.shape)  # 像元中心判斷，跨平台一致
         n_bad = int(np.count_nonzero(got != want))
         if n_bad:
             res.error(f"class {cid} 多邊形柵格化後與分級像元有 {n_bad} 格不符（位置 / 形狀錯誤）")

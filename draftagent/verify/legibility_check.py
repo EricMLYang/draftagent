@@ -19,7 +19,7 @@
   - 圖層關閉 / 凍結 / 不出圖的文字不檢查（印不出來；圖層可見性由其他檢查把關）
 - `check_text_overlaps(doc, layout_name="Model", frozen_layers=(), overlap_ratio=0.10, *,
   line_layers=(), ignore_layers=()) -> tuple[list[str], list[str]]`
-  回傳 (errors, warnings)。以 `ezdxf.bbox.extents(fast=False)` 取文字框（DIMENSION 取 geometry
+  回傳 (errors, warnings)。以 `verify.textbox.est_text_box`（與平台字型無關的估算）取文字框（DIMENSION 取 geometry
   block 內的文字），一律換算到該 layout 的圖紙座標後兩兩比對：
   - 交集面積 > 較小框面積 × `overlap_ratio` → error
   - 文字框與 `line_layers` 上的線（LINE / LWPOLYLINE / POLYLINE / ARC / CIRCLE / SPLINE）相交
@@ -51,6 +51,7 @@ from shapely.geometry import LineString, Point, Polygon, box
 from shapely.strtree import STRtree
 
 from draftagent.verify.base import VerifyResult, emit
+from draftagent.verify.textbox import est_text_box
 
 NAME = "legibility_check"
 MODEL = "Model"
@@ -86,9 +87,13 @@ def _plain_text(e) -> str:
 
 
 def _extents(e) -> tuple[float, float, float, float] | None:
+    # 文字框一律估算（與平台字型無關）：fast=False 依本機字型量字寬，CI 上 Linux / Windows 結果不同
+    box = est_text_box(e)
+    if box is not None:
+        return box
     try:
-        ext = ezbbox.extents([e], fast=False)
-    except Exception:  # noqa: BLE001 - 字型 / 實體無法量測
+        ext = ezbbox.extents([e], fast=True)
+    except Exception:  # noqa: BLE001 - 實體無法量測
         return None
     if not ext.has_data:
         return None

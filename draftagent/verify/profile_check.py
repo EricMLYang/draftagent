@@ -29,7 +29,6 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import ezdxf
-from ezdxf import bbox as ezbbox
 
 from draftagent.hydro.drawing_codes import DEFAULT_PATH, load_drawing_codes
 from draftagent.schema.profile import (
@@ -42,6 +41,7 @@ from draftagent.schema.profile import (
 )
 from draftagent.verify.base import VerifyResult, emit
 from draftagent.verify.dimtext import displayed_text, forbidden_vars, matches_number
+from draftagent.verify.textbox import est_text_box
 
 NAME = "profile_check"
 INSUNITS_MM = 4
@@ -511,9 +511,10 @@ def _table_top(msp) -> float | None:
 
 
 def _text_xrange(e) -> tuple[float, float]:
-    ext = ezbbox.extents([e], fast=False)
-    if ext.has_data:
-        return ext.extmin.x, ext.extmax.x
+    # 估算文字框（與平台字型無關）；fast=False 會依本機字型量字寬，跨平台結果不同
+    box = est_text_box(e)
+    if box is not None:
+        return box[0], box[2]
     _, p, _ = e.get_placement()
     return p[0], p[0]
 
@@ -685,14 +686,11 @@ def check_text_anchors(res, msp, tol: float = 1.0) -> None:
         if not e.dxf.hasattr("align_point"):
             continue
         ins = e.dxf.insert
-        ext = ezbbox.extents([e], fast=False)
-        if not ext.has_data:
+        box = est_text_box(e)  # 依 align_point 估算，與平台字型無關
+        if box is None:
             continue
         h = float(e.dxf.get("height", 1.0)) + tol
-        if not (
-            ext.extmin.x - h <= ins.x <= ext.extmax.x + h
-            and ext.extmin.y - h <= ins.y <= ext.extmax.y + h
-        ):
+        if not (box[0] - h <= ins.x <= box[2] + h and box[1] - h <= ins.y <= box[3] + h):
             ap = e.dxf.align_point
             res.error(
                 f"TEXT {e.dxf.handle}「{e.dxf.text}」插入點 ({ins.x:.1f},{ins.y:.1f}) 與對齊點 "

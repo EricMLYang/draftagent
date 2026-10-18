@@ -211,10 +211,17 @@ def classify(slope: np.ndarray, table: SlopeClassTable) -> np.ndarray:
 
 
 def site_mask(geom, transform: rasterio.Affine, shape_: tuple[int, int]) -> np.ndarray:
-    """像元中心落在基地內 → True。"""
-    return features.geometry_mask(
-        [geom], out_shape=shape_, transform=transform, invert=True, all_touched=False
-    )
+    """像元中心**嚴格**落在多邊形內部 → True（中心恰在邊線上 = 不算）。
+
+    不用 rasterio `geometry_mask`：它走 GDAL 點陣化，各平台 wheel 內建的 GDAL 版本不同，
+    中心落在邊線上的像元判斷會不一樣（CI 上 Linux / Windows 比 macOS 多 1–3 個像元）。
+    shapely `contains_xy` 是確定的點在多邊形內判斷，跨平台一致。
+    """
+    import shapely
+
+    rows, cols = np.indices(shape_)
+    xs, ys = rasterio.transform.xy(transform, rows.ravel(), cols.ravel(), offset="center")
+    return shapely.contains_xy(geom, np.asarray(xs), np.asarray(ys)).reshape(shape_)
 
 
 def class_stats(

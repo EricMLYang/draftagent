@@ -102,7 +102,8 @@ def test_ensure_utf8_stdio_reconfigures_cp950(monkeypatch):
     print("🟢 綠燈 🔴 紅燈 坵塊 㙟")  # emoji + 罕用字（cp950 沒有）
     print("🔴 錯誤", file=sys.stderr)
     sys.stdout.flush()
-    assert out.buffer.getvalue().decode("utf-8") == "🟢 綠燈 🔴 紅燈 坵塊 㙟\n"
+    # Windows 的 TextIOWrapper 預設把 \n 寫成 \r\n；比較時正規化換行
+    assert out.buffer.getvalue().decode("utf-8").replace("\r\n", "\n") == "🟢 綠燈 🔴 紅燈 坵塊 㙟\n"
     assert ensure_utf8_stdio(force=True) == []  # 已是 UTF-8：不再動
 
 

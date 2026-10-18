@@ -784,7 +784,11 @@ def _grid_ticks(psp, bbox, view_c, k: float) -> None:
         if x0 + 3 < x < x1 - 3:
             psp.add_line((x, y0), (x, y0 + 2.0), dxfattribs=lay)
             psp.add_line((x, y1), (x, y1 - 2.0), dxfattribs=lay)
-            add_text(psp, f"E {fmt_coord(e)}", (x, y0 - 1.2), SMALL_MM, "X-GRID", Align.TOP_CENTER)
+            txt = f"E {fmt_coord(e)}"
+            half = est_text_width(txt, SMALL_MM) / 2
+            # 數值整段要在圖框邊長內：伸出角落會與 N 刻度（轉 90° 在左緣）重疊
+            if x0 <= x - half and x + half <= x1:
+                add_text(psp, txt, (x, y0 - 1.2), SMALL_MM, "X-GRID", Align.TOP_CENTER)
         e += step
     n = math.ceil(n_lo / step) * step
     while n <= n_hi:
@@ -792,15 +796,10 @@ def _grid_ticks(psp, bbox, view_c, k: float) -> None:
         if y0 + 3 < y < y1 - 3:
             psp.add_line((x0, y), (x0 + 2.0, y), dxfattribs=lay)
             psp.add_line((x1, y), (x1 - 2.0, y), dxfattribs=lay)
-            add_text(
-                psp,
-                f"N {fmt_coord(n)}",
-                (x0 - 1.2, y),
-                SMALL_MM,
-                "X-GRID",
-                Align.BOTTOM_CENTER,
-                rotation=90.0,
-            )
+            txt = f"N {fmt_coord(n)}"
+            half = est_text_width(txt, SMALL_MM) / 2
+            if y0 <= y - half and y + half <= y1:  # 同上：不伸出角落
+                add_text(psp, txt, (x0 - 1.2, y), SMALL_MM, "X-GRID", Align.BOTTOM_CENTER, rotation=90.0)
         n += step
     # 格網交點十字（圖紙 mm，細線）
     e = math.ceil(e_lo / step) * step
