@@ -89,6 +89,35 @@ Sonnet 首輪 1-1 / 1-3 / drainage-ty-1 / outflow-1 / rules-1（被 `20261018-03
 
 ---
 
+### (d) Level 4 極限題（2026-10-18，每題 ×2；Haiku 因時間中止於 rooms-14#1）
+
+| 題目 | Opus 5.5 | Sonnet 5.5 | Haiku 5.5 |
+|---|---|---|---|
+| chain-full（套疊 → 平面 → 計畫書） | 2/2 | 2/2 | 1/2 ❗ |
+| conflict-1（需求矛盾，應停下） | 2/2 | 2/2 ¹ | 2/2 ¹ |
+| design-large（1.2 ha 從零設計） | 2/2 ² | 2/2 ² | 0/2 ❗ |
+| rooms-14 | 2/2 | 2/2 | 0/1 ❗（中止） |
+| rooms-18 | 2/2 | 2/2 | 未跑 |
+| rooms-tight（面積餘裕 3%） | 2/2 | 2/2 | 未跑 |
+
+¹ 原判 `harness_blocked`（agent 用 sed / rm / cat> 改 work/ 檔被權限擋）。已修：harness 放行這些指令；
+conflict 題回覆已點出衝突即判 pass（被擋只附註）。依修正後規則，這些回覆皆點出衝突。
+² 各有 1 次原判 `fail_reply`：agent 引用第 2-1 條（都市計畫區新建 ≥ 0.2 ha），grader 只認 1 ha 門檻。
+第 2-1 條對本題更貼切，已改為兩種答法皆接受。
+上表 ¹ ² 為依修正後規則的人工判讀，未重新執行（使用者指示收尾、不再跑長任務）。
+
+**真實能力失敗（全在 Haiku）**
+- chain-full#1：site-overlay 綠燈後，自寫 exact-cover / 窮舉搜尋找 L 形平面配置未果，誠實停下回報，未交付平面與計畫書。
+- rooms-14#0：自寫模擬退火搜尋 4 個 seed，最佳 penalty 456（卡在門的鄰接），誠實停下。
+- design-large ×2：整套圖 verifier 全綠，但回覆完全未提出流管制適用性判斷（1.2 ha 必須評估）——長任務漏項。
+
+**結論**：Level 4 首次拉開差距。Opus / Sonnet 實質 12/12；Haiku 在「多步驟長任務」與「14 房以上空間配置」
+失敗，且失敗方式良好（不編造、不放寬需求、說明卡點）。PLAN 原預期「6–8 間後空間推理出錯」對大模型不成立；
+小模型的極限先出現在長任務完整性，其次才是 14 房級配置搜尋。
+
+**已知 harness 限制**：agent 使用背景程序時 stream 會出現多個 result 事件，`streamjson` 只取最後一個，
+`turns` / 成本會低估（例如 Haiku chain-full#1 記為 2 turns）。待修。
+
 ## 逐次評估紀錄（harness 自動 append）
 
 由 `python tools/eval.py run …` 自動 append，每次 run 一列；彙總用 `python tools/eval.py report`。
