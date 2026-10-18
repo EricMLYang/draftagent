@@ -146,6 +146,14 @@ verifier：`slope_check`、`crs_check`
 | gpkg 多邊形 ⊂ 基地.buffer(像元)，柵格化後 = 重算像元集合 | 不判斷山坡地可開發性（只做分級統計） |
 | gpkg、tif CRS = 3826 | |
 
+### `arch-import`（ArchImportSpec → 建築師 DXF 抽外框，TWD97 GeoJSON）
+
+| 檢查什麼 | 不檢查什麼（已知限制） |
+|---|---|
+| 重讀 DXF、獨立 numpy lstsq 重算相似變換；控制點 ≥3 點每點殘差 ≤ 0.05 m（2 點只 warning）；縮放比 ∈ [0.995, 1.005]（抓單位判斷錯）；轉換前後面積差 ≤ 0.1%；多邊形有效、外框數量；接縫 ≤ join_tolerance；外框與落水點在基地內；每個 feature 的 source_handles 存在且有效圖層屬於該角色；area / perimeter 屬性與 transform.json 一致；$INSUNITS 與 drawing_units 不符 warning；外框邊 < 60% 落在原線上 warning | **重建比對共用 extract 的接線 / 成面演算法**——演算法本身錯（例如開發中曾把 L 形算成 15 m² 仍綠燈）抓不到；正確性靠 `tests/fixtures/archdxf/` 10 個雜亂 case 的 truth Hausdorff 測試與回歸測試把關。選錯 wall_representation、選錯圖層但幾何自洽時，只能靠 overlay.png 人眼與 inspect-dxf 候選分數輔助 |
+
+前置工具 `draftagent inspect-dxf`：單位推測、圖層表、外牆 / 基地 / 樓層候選（含顏色＋線寬分組）、圖塊與 xref、樓層分群；在 10 個 fixture 上外牆圖層皆排第 1、單位推測 10/10。
+
 ## 稽核修補紀錄
 
 2026-10 對 verifier 做過一次 false-negative 稽核（故意竄改產物或 spec 後重跑，約 95 個情境中約 80 個原本綠燈）。

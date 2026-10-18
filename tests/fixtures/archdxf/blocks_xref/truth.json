@@ -1,0 +1,110 @@
+{
+  "case": "blocks_xref",
+  "units": "mm",
+  "insunits_header": 4,
+  "layers": {
+    "exterior_wall": "A-WALL",
+    "basement": null,
+    "site": "C-PROP"
+  },
+  "control_points": [
+    {
+      "id": "CP1",
+      "drawing": [
+        -21500,
+        -16000
+      ],
+      "twd97": [
+        289756.2,
+        2731206.2
+      ]
+    },
+    {
+      "id": "CP2",
+      "drawing": [
+        21500,
+        -16000
+      ],
+      "twd97": [
+        289799.2,
+        2731206.2
+      ]
+    },
+    {
+      "id": "CP3",
+      "drawing": [
+        21500,
+        11500
+      ],
+      "twd97": [
+        289799.2,
+        2731233.7
+      ]
+    }
+  ],
+  "footprint_twd97": [
+    [
+      289759.7,
+      2731212.2
+    ],
+    [
+      289795.7,
+      2731212.2
+    ],
+    [
+      289795.7,
+      2731232.2
+    ],
+    [
+      289784.7,
+      2731232.2
+    ],
+    [
+      289784.7,
+      2731225.2
+    ],
+    [
+      289770.7,
+      2731225.2
+    ],
+    [
+      289770.7,
+      2731232.2
+    ],
+    [
+      289759.7,
+      2731232.2
+    ]
+  ],
+  "basement_twd97": null,
+  "floor_filter": null,
+  "site_twd97": [
+    [
+      289756.2,
+      2731206.2
+    ],
+    [
+      289799.2,
+      2731206.2
+    ],
+    [
+      289799.2,
+      2731233.7
+    ],
+    [
+      289794.2,
+      2731236.2
+    ],
+    [
+      289756.2,
+      2731236.2
+    ]
+  ],
+  "gap_mm": 0.0,
+  "notes": "外牆分散在三處：modelspace 開放 LWPOLYLINE（3 邊）＋ INSERT WING_NOTCH（旋轉 90°、縮放 2，凹口 3 邊）＋ INSERT WEST_WING（旋轉 -30°，INSERT 自己在 A-WALL-INT 層）內巢狀 INSERT CORNER_W（相對旋轉 45°、縮放 0.5，實體在 0 層、巢狀 INSERT 在 A-WALL 層 → 依 DXF 規則繼承為 A-WALL）。須展開圖塊（virtual_entities / 遞迴變換）才拿得到完整外框。另有兩個 xref 定義（XREF_SITE_SURVEY、XREF_FURN_LIB）指向不存在的外部檔：工具要報告「缺外部參照」而不崩潰。",
+  "xrefs": [
+    "XREF_SITE_SURVEY",
+    "XREF_FURN_LIB"
+  ],
+  "footprint_area_m2": 622.0
+}

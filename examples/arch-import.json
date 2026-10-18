@@ -1,0 +1,92 @@
+{
+  "kind": "arch-import",
+  "title": "範例 1F 外框（合成）",
+  "source_dxf": "examples/data/arch/example_1f.dxf",
+  "drawing_units": "mm",
+  "layers": {
+    "exterior_wall": [
+      "A-WALL"
+    ],
+    "open_space": [
+      "L-OPEN"
+    ],
+    "roof_drains": [
+      "P-RDRN"
+    ]
+  },
+  "wall_representation": "double_line",
+  "floor_filter": {
+    "title_text": "一層平面圖",
+    "search_radius": 20000
+  },
+  "control_points": [
+    {
+      "id": "CP1",
+      "drawing": [
+        -1000,
+        -1000
+      ],
+      "twd97": [
+        279999.2298,
+        2769998.8139
+      ],
+      "source": "合成範例（基地界址點）"
+    },
+    {
+      "id": "CP2",
+      "drawing": [
+        25000,
+        -1000
+      ],
+      "twd97": [
+        280024.6616,
+        2770004.2196
+      ],
+      "source": "合成範例（基地界址點）"
+    },
+    {
+      "id": "CP3",
+      "drawing": [
+        25000,
+        17000
+      ],
+      "twd97": [
+        280020.9192,
+        2770021.8263
+      ],
+      "source": "合成範例（基地界址點）"
+    },
+    {
+      "id": "CP4",
+      "drawing": [
+        -1000,
+        17000
+      ],
+      "twd97": [
+        279995.4874,
+        2770016.4206
+      ],
+      "source": "合成範例（基地界址點）"
+    }
+  ],
+  "site": {
+    "coords": [
+      [
+        279998.4595,
+        2769997.6279
+      ],
+      [
+        280025.8477,
+        2770003.4494
+      ],
+      [
+        280021.6894,
+        2770023.0124
+      ],
+      [
+        279994.3013,
+        2770017.1908
+      ]
+    ]
+  }
+}

@@ -101,3 +101,33 @@ TWD97 3826 合理範圍約 E 150k–360k、N 2.42M–2.80M（台北約 E 300k、
 - **淹水潛勢圖依法僅供防救災，不得作為土地使用管制或可建性依據**，只能列風險提示
 - 使用分區只能說「套疊結果」，不得延伸成法規判定；建蔽 / 容積數值只能從 `draftagent/*/codes/*.yaml` 讀
 - 範例圖資（`examples/data/`，`tools/make_examples.py` 產生）與評估考題圖資都是**合成資料**，不是真實地籍
+
+## 讀建築師 DXF（arch-import）
+
+建築師給的平面圖 DXF 要當排水 / 基地 spec 的原始資料時，**不要手寫 ezdxf 腳本抽線**，一律走：
+
+1. `draftagent inspect-dxf <drawing.dxf>`：看圖層清單、各層實體數 / 顏色 / 線寬、範圍、$INSUNITS、文字（圖名、
+   「CPn E=… N=…」控制點標註）、圖塊 / xref
+2. 判斷並寫進 spec（`draftagent schema arch-import`、範例 `examples/arch-import.json`）：
+   - `layers.exterior_wall`（必填）：真正的一樓外牆層。小心誘餌：名字像 A-WALL 的舊版綁定層（`A-WALL$0$…`）、
+     陽台欄杆、圖框、內牆。外牆和雜線同層（例如全在 0 層）→ `exterior_wall_filter: {color, lineweight}`
+   - 圖塊內 0 層實體繼承 INSERT 的圖層（巢狀時逐層繼承），以「展開後的有效圖層」判斷
+   - `drawing_units`（必填，mm / cm / m）：看尺寸標註、文字高、門弧半徑判斷，**不得只信 $INSUNITS**
+     （header 常是錯的；不符時 arch_check 會 warning）
+   - `wall_representation`：外牆單線外框 = `outline`；雙線（外緣 + 內緣，門窗處斷開）= `double_line`
+     （開口 ≤ `opening_max`〔預設 3 m〕會被橋接；外牆凹口比 opening_max 窄時會被填平 → 調小）
+   - `floor_filter`：多層並排在同一 modelspace 時用 `bbox` 或 `title_text`（例「一層平面圖」，完全相符優先）＋
+     `search_radius`；圖層已依樓層命名（`1F-WALL`）時直接指定圖層即可。地下室畫在旁邊、控制點只對 1F →
+     `offsets.basement = [-dx, -dy]`（用各層軸線對位求得）
+   - `control_points`：≥ 2，**建議 ≥ 3**（2 點時轉換無法驗證，會 warning）。來源：圖上標註的界址點、
+     地籍圖套繪、工程師提供。**沒有控制點就停下來問使用者 / 工程師，不要自己猜座標或用圖上原點硬套**
+   - `join_tolerance`：預設 10 mm（上限 50 mm）；縫更大 → 問建築師，不要放大容差硬接
+   - `site`：有基地界線就給（coords 或 EPSG:3826 檔），外框出基地會紅燈
+3. `draftagent build spec.json` → `arch.geojson`（EPSG:3826；footprint / basement / open_space / roof_drain，
+   帶 source_layers、source_handles、area_m2、perimeter_m）、`transform.json`（縮放、旋轉、各控制點殘差、接縫）、
+   `overlay.png`（原圖淡灰 + 外框紅）。**貼 arch_check 完整輸出**；紅燈修 spec，不改 verifier
+4. arch_check：重讀 DXF 重建比對（對稱差 ≤ 0.1%）、殘差 ≤ 0.05 m（≥ 3 點）、縮放比 ∈ [0.995, 1.005]
+   （超出 = 單位或控制點錯）、面積守恆 ≤ 0.1%、多邊形有效且外框唯一、接縫 ≤ join_tolerance、⊂ 基地（0.05 m）、
+   source_handles 可追溯到指定圖層
+5. 把 `arch.geojson` 當原始資料寫排水 spec（建物外框、落水頭位置）；轉換結果仍要請工程師目視 overlay.png 確認。
+   只能說「通過 arch_check 的檢查項目」，不能說外框「正確」或「符合法規」

@@ -110,7 +110,8 @@ def render_png(
     w_in, h_in = max((x1 - x0) / 25.4, 1), max((y1 - y0) / 25.4, 1)
     # 非圖紙 mm 的圖（mm 實尺建築圖、m 座標圖）會大到數十億像素：長邊上限 max_px。
     # 降 dpi 時線寬也等比例變細到看不見 → 以相同倍率加粗線條
-    eff_dpi = max(min(dpi, max_px / max(w_in, h_in)), 10)
+    # 不設高下限：大尺寸 mm 實尺圖要壓到 dpi < 1 才能守住 max_px（線寬已等比補償）
+    eff_dpi = max(min(dpi, max_px / max(w_in, h_in)), 0.05)
     if eff_dpi < dpi:
         _draw(MM_TO_PT * dpi / eff_dpi)
     fig.set_size_inches(w_in, h_in)  # 重畫會重設 figure 尺寸，必須在最後設定

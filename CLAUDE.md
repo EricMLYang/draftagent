@@ -57,6 +57,8 @@ draftagent build spec.json --kind slope  # JSON / YAML 也可；沒有 kind 欄�
 draftagent verify <kind> <spec> --artifacts runs/<…>/   # 對既有產物重跑 verifier
 draftagent preview <file.dxf> -o out.png # DXF → PNG（只供人眼檢查）
 draftagent check                         # 環境自檢：套件、CJK 字型、pyswmm / ODA
+draftagent inspect-dxf <arch.dxf>        # 看懂建築師 DXF：單位、圖層、外牆候選、樓層（之後用 arch-import 圖種轉 TWD97）
+draftagent inspect-dxf <arch.dxf>        # 看懂建築師 DXF：單位、圖層、外牆候選、樓層（之後用 arch-import 圖種轉 TWD97）
 pytest                                   # verifier 單元測試
 python -m draftagent.verify.<name> ...   # 單一 verifier 仍可獨立執行
 ```

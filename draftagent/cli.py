@@ -231,6 +231,50 @@ def preview(
     _guard(as_json, run)
 
 
+# ---------------------------------------------------------------- inspect-dxf
+
+
+@app.command("inspect-dxf")
+def inspect_dxf_cmd(
+    dxf: Annotated[Path, typer.Argument(help="建築師 DXF 檔")],
+    png: Annotated[Path | None, typer.Option("--png", help="輸出整張預覽 PNG")] = None,
+    layer_png_dir: Annotated[Path | None, typer.Option(
+        "--layer-png-dir", help="每個候選圖層單獨上色的 PNG 輸出目錄")] = None,
+    as_json: JsonOpt = False,
+) -> None:
+    """體檢建築師 DXF：讀檔 / 單位推測 / 圖層統計與候選 / 圖塊 xref / 樓層線索 / paperspace。"""
+    from draftagent.arch.inspect import format_report, inspect_doc, layer_pngs
+
+    def run() -> None:
+        if not dxf.exists():
+            raise FileNotFoundError(f"找不到 {dxf}")
+        rep, doc = inspect_doc(dxf)
+        if doc is not None and png is not None:
+            from draftagent.render.preview import render_png
+
+            try:
+                rep["png"] = str(render_png(doc, png))
+            except Exception as e:  # noqa: BLE001
+                rep["warnings"].append(f"預覽 PNG 失敗：{type(e).__name__}: {e}")
+        if doc is not None and layer_png_dir is not None:
+            try:
+                rep["layer_pngs"] = layer_pngs(doc, rep, layer_png_dir)
+            except Exception as e:  # noqa: BLE001
+                rep["warnings"].append(f"圖層 PNG 失敗：{type(e).__name__}: {e}")
+        if as_json:
+            _out(rep)
+        else:
+            typer.echo(format_report(rep))
+            for k in ("png",):
+                if rep.get(k):
+                    typer.echo(f"wrote {rep[k]}")
+            for p in rep.get("layer_pngs", []):
+                typer.echo(f"wrote {p}")
+        raise typer.Exit(0 if rep["ok"] else 1)
+
+    _guard(as_json, run)
+
+
 # ---------------------------------------------------------------- check
 
 
