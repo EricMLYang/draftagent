@@ -131,3 +131,10 @@ TWD97 3826 合理範圍約 E 150k–360k、N 2.42M–2.80M（台北約 E 300k、
    source_handles 可追溯到指定圖層
 5. 把 `arch.geojson` 當原始資料寫排水 spec（建物外框、落水頭位置）；轉換結果仍要請工程師目視 overlay.png 確認。
    只能說「通過 arch_check 的檢查項目」，不能說外框「正確」或「符合法規」
+
+### 建築師給的是 DWG
+
+先 `draftagent convert-dwg <file.dwg>`：自動判斷作業系統，依序嘗試本機可用的轉檔工具
+（Windows：ODA File Converter → LibreDWG；macOS / Linux：LibreDWG → ODA），轉出後確認 ezdxf 讀得到。
+都沒有可用工具時會列出該平台的安裝方式——**不要自己下載或安裝軟體**，把提示轉告使用者；
+最可靠的替代是請建築師在 AutoCAD / BricsCAD「另存 DXF」。轉完接 `inspect-dxf`。

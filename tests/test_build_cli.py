@@ -419,5 +419,8 @@ def test_cli_check_json():
     env = json.loads(r.output)
     assert r.exit_code == (0 if env["ok"] else 1)
     assert env["packages"]["ezdxf"]["ok"]
-    assert {"pyswmm", "swmm-toolkit", "ODA File Converter"} <= set(env["optional"])
+    assert {"pyswmm", "swmm-toolkit"} <= set(env["optional"])
+    # DWG 轉檔工具依平台排序列出（兩種都要出現）
+    dwg = [k for k in env["optional"] if k.startswith("DWG 轉檔")]
+    assert len(dwg) == 2 and any("ODA" in k for k in dwg) and any("LibreDWG" in k for k in dwg)
     assert set(KIND_NAMES) <= set(env["kinds"])

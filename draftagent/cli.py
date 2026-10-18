@@ -7,7 +7,6 @@ Pydantic ValidationError 轉成「欄位路徑 + 錯誤 + 允許值 / 範圍」�
 from __future__ import annotations
 
 import json
-import shutil
 import signal
 import subprocess
 import sys
@@ -275,6 +274,45 @@ def inspect_dxf_cmd(
     _guard(as_json, run)
 
 
+# ---------------------------------------------------------------- convert-dwg
+
+
+@app.command("convert-dwg")
+def convert_dwg_cmd(
+    dwg: Annotated[Path, typer.Argument(help="DWG 檔（已是 DXF 則直接回報）")],
+    out: Annotated[Path | None, typer.Option("-o", "--out", help="輸出 DXF 路徑（預設同名 .dxf）")] = None,
+    prefer: Annotated[str | None, typer.Option(
+        "--prefer", help="指定優先使用的工具：oda / libredwg（預設依作業系統）")] = None,
+    as_json: JsonOpt = False,
+) -> None:
+    """DWG → DXF：判斷作業系統，挑本機可用的轉檔工具（Windows 先 ODA；macOS / Linux 先 LibreDWG）。"""
+    from draftagent.arch.convert import convert_dwg, detect
+
+    def run() -> None:
+        if prefer not in (None, "oda", "libredwg"):
+            raise ValueError("--prefer 只能是 oda 或 libredwg")
+        res = convert_dwg(dwg, out, prefer=prefer)
+        convs = detect(res.platform)
+        if as_json:
+            d = res.to_dict()
+            d["converters"] = [c.__dict__ for c in convs]
+            _out(d)
+        else:
+            typer.echo(f"平台：{res.platform}")
+            for c in convs:
+                extra = (f"  {c.path}" if c.path else "") + (f"  （{c.note}）" if c.note else "")
+                typer.echo(f"  {'✓' if c.available else '✗'} {c.name}{extra}")
+            typer.echo(("🟢 " if res.ok else "🔴 ") + res.message)
+            if res.output:
+                typer.echo(f"輸出：{res.output}")
+                typer.echo(f"下一步：draftagent inspect-dxf {res.output}")
+            for h in res.hints:
+                typer.echo(f"  → {h}")
+        raise typer.Exit(0 if res.ok else 1)
+
+    _guard(as_json, run)
+
+
 # ---------------------------------------------------------------- check
 
 
@@ -336,16 +374,16 @@ def _environment() -> dict[str, Any]:
         fonts = {"error": f"{type(e).__name__}: {e}"}
 
     optional = {n: _probe(c) for n, c in OPTIONAL_IMPORTS}
-    try:
-        from ezdxf.addons import odafc
+    from draftagent.arch.convert import current_platform, detect
 
-        oda = bool(odafc.is_installed())
-    except Exception:  # noqa: BLE001
-        oda = False
-    optional["ODA File Converter"] = {
-        "ok": oda or bool(shutil.which("ODAFileConverter")),
-        "detail": "DWG 轉換（ezdxf.addons.odafc）",
-    }
+    system = current_platform()
+    for i, conv in enumerate(detect(system), start=1):
+        label = {"oda": "ODA File Converter", "libredwg": "LibreDWG（dwg2dxf）"}[conv.name]
+        optional[f"DWG 轉檔 #{i}：{label}"] = {
+            "ok": conv.available,
+            "detail": f"{system} 優先序 {i}" + (f"；{conv.path}" if conv.path else "")
+            + (f"；{conv.note}" if conv.note else ""),
+        }
 
     kinds_info: dict[str, Any] = {}
     for k in registry.all_kinds():
