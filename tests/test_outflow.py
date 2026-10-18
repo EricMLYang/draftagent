@@ -12,6 +12,7 @@ from __future__ import annotations
 import copy
 import json
 import math
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -419,6 +420,7 @@ def test_swmm_inp_structure(base, result, mode):
     assert opts["FLOW_UNITS"] == "CMS"
 
 
+@pytest.mark.skipif(os.name == "nt", reason="SWMM 引擎（swmm-toolkit 動態庫）未在 Windows CI 驗證")
 def test_swmm_engine_parses(tmp_path, base, result):
     """以子行程跑 swmm-toolkit；本機動態庫被系統終止或未安裝時 skip（不在主行程 import）。"""
     inp = write_inp(_spec(base), tmp_path / "t10.inp", T=10, result=result)

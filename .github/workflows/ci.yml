@@ -43,6 +43,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         python: ["3.11", "3.12"]
+        include:
+          # 同事端以 Windows（AutoCAD / BricsCAD）為主：至少一組 Windows
+          - os: windows-latest
+            python: "3.12"
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
@@ -57,11 +61,19 @@ jobs:
           sudo apt-get install -y -q --no-install-recommends fonts-noto-cjk
           fc-list :lang=zh family | head -5
       - name: install
+        shell: bash
         run: |
           uv venv --python ${{ matrix.python }}
           uv pip install -e ".[dev,ifc,report]"   # ifc：floor-plan 圖種的 IFC 輸出 / 讀回
       - name: pytest
-        run: .venv/bin/pytest -q -n auto
+        shell: bash
+        env:
+          # 測試端以 subprocess(text=True) 讀子行程輸出；Windows runner 的 locale 編碼不是 UTF-8，
+          # 開 UTF-8 mode 只影響測試行程的解碼。產品端的編碼由 test_windows_compat 靜態掃描 + cp950 模擬測試把關
+          PYTHONUTF8: "1"
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then PY=.venv/Scripts/python.exe; else PY=.venv/bin/python; fi
+          "$PY" -m pytest -q -n auto
       - name: upload previews
         if: always()
         uses: actions/upload-artifact@v4

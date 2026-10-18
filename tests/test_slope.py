@@ -243,7 +243,7 @@ def test_spec_extra_forbidden():
 
 
 def _rewrite_csv(src: Path, dst: Path, fn) -> None:
-    with open(src, encoding="utf-8", newline="") as fh:
+    with open(src, encoding="utf-8-sig", newline="") as fh:
         rows = list(csv.DictReader(fh))
         fields = list(rows[0])
     rows = fn(rows)

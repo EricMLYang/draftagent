@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -20,7 +21,13 @@ from draftagent.eval.graders import (
     rebase_codes_paths,
 )
 from draftagent.eval.harness import append_results, report, run_one
-from draftagent.eval.runners import PREAMBLE, ClaudeCodeRunner, ReplayRunner, build_prompt
+from draftagent.eval.runners import (
+    PREAMBLE,
+    ClaudeCodeRunner,
+    ReplayRunner,
+    abs_rule_path,
+    build_prompt,
+)
 from draftagent.eval.streamjson import RunStats, parse_stream
 from draftagent.eval.tasks import Task, TaskDef, discover_tasks, select_tasks
 from draftagent.eval.workspace import create_workspace, leaks
@@ -85,15 +92,15 @@ def test_workspace_has_no_answers(ws):
     assert (root / ".claude/skills").is_dir()
     # 工作區 venv 載入的是工作區的 draftagent，不是原 repo
     out = subprocess.run(
-        [str(root / ".venv/bin/python"), "-c", "import draftagent; print(draftagent.__file__)"],
-        cwd="/",
+        [str(ws.exe("python")), "-c", "import draftagent; print(draftagent.__file__)"],
+        cwd=Path(root.anchor),
         capture_output=True,
         text=True,
         check=True,
         env=ws.env(),
     ).stdout.strip()
     assert Path(out).resolve().is_relative_to(root.resolve())
-    assert (root / ".venv/bin/draftagent").exists()
+    assert ws.exe("draftagent").exists()
 
 
 def test_protected_change_detected(ws):
@@ -208,7 +215,7 @@ def test_workspace_new_each_kind(ws_module, name):
     w = ws_module
     out = w.root / "work" / f"{name.replace('-', '_')}.py"
     r = subprocess.run(
-        [str(w.venv_bin / "draftagent"), "new", name, "-o", str(out), "--force"],
+        [str(w.exe("draftagent")), "new", name, "-o", str(out), "--force"],
         cwd=w.root,
         capture_output=True,
         text=True,
@@ -225,10 +232,10 @@ def test_workspace_new_spec_builds_green(ws_module):
     env = w.env()
     run = {"cwd": w.root, "capture_output": True, "text": True, "env": env, "timeout": 300}
     r = subprocess.run(
-        [str(w.venv_bin / "draftagent"), "new", "site-overlay", "-o", str(out), "--force"], **run
+        [str(w.exe("draftagent")), "new", "site-overlay", "-o", str(out), "--force"], **run
     )
     assert r.returncode == 0, r.stdout + r.stderr
-    r = subprocess.run([str(w.venv_bin / "draftagent"), "build", str(out), "--no-preview"], **run)
+    r = subprocess.run([str(w.exe("draftagent")), "build", str(out), "--no-preview"], **run)
     assert r.returncode == 0, r.stdout + r.stderr
     assert "RESULT: PASS" in r.stdout
 
@@ -574,7 +581,9 @@ def test_claude_command_flags(ws):
     allowed = cmd[cmd.index("--allowedTools") + 1]
     assert "Bash(.venv/bin/draftagent:*)" in allowed and " " not in allowed
     denied = cmd[cmd.index("--disallowedTools") + 1]
-    assert f"Read(/{ws.source}/**)" in denied
+    assert f"Read(//{abs_rule_path(ws.source)}/**)" in denied
+    if os.name != "nt":
+        assert f"Read(/{ws.source}/**)" in denied  # POSIX：// + /Users/... 去掉開頭 /
     assert not any(PREAMBLE in c for c in cmd)  # prompt 走 stdin，不在 argv
 
 

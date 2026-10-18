@@ -14,6 +14,7 @@ from draftagent.render import detail, drainage_plan, dxf, profile, sheet
 from draftagent.render.standards import (
     DEFAULT_CJK_FONT,
     FONT_ENV,
+    NOTO_CJK_FONT,
     WINDOWS_CJK_FONT,
     apply_layers,
     load_layers,
@@ -110,10 +111,11 @@ def test_text_style_env_override(monkeypatch):
     doc = ezdxf.new("R2010", setup=True)
     assert doc.styles.get(text_style(doc)).dxf.font == DEFAULT_CJK_FONT
     assert sheet.CJK_FONT == DEFAULT_CJK_FONT  # 向後相容常數
-    monkeypatch.setenv(FONT_ENV, WINDOWS_CJK_FONT)
+    assert DEFAULT_CJK_FONT == WINDOWS_CJK_FONT == "msjh.ttc"  # Windows CAD 內建微軟正黑體
+    monkeypatch.setenv(FONT_ENV, NOTO_CJK_FONT)
     text_style(doc)
-    assert doc.styles.get("CJK").dxf.font == WINDOWS_CJK_FONT
-    assert sheet.new_sheet_doc().styles.get("CJK").dxf.font == WINDOWS_CJK_FONT
+    assert doc.styles.get("CJK").dxf.font == NOTO_CJK_FONT
+    assert sheet.new_sheet_doc().styles.get("CJK").dxf.font == NOTO_CJK_FONT
 
 
 # ---------------------------------------------------------------- 各圖種範例 → standards_check 綠

@@ -30,8 +30,9 @@ USAGE_KEYS = (
     "cache_creation_input_tokens",
     "cache_read_input_tokens",
 )
-# 一個 Bash 指令裡出現 `draftagent build`（含 .venv/bin/draftagent、python -m draftagent.cli build）
-BUILD_RE = re.compile(r"(?:^|[\s/;&|(])draftagent(?:\.cli)?\s+build\b")
+# 一個 Bash 指令裡出現 `draftagent build`（含 .venv/bin/draftagent、python -m draftagent.cli build、
+# Windows 的 .venv\Scripts\draftagent.exe / 工作區 draftagent.cmd）
+BUILD_RE = re.compile(r"(?:^|[\s/\\;&|(\"'])draftagent(?:\.cli|\.exe|\.cmd)?[\"']?\s+build\b")
 
 
 @dataclass

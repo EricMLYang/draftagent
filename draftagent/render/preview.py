@@ -5,12 +5,14 @@
 中文字型：ezdxf 以文字樣式的字型檔繪字。DXF 指定的 CJK 字型（如 Noto Sans TC）本機沒有時，
 ezdxf 會退回不含中文的預設字型而畫成方塊，因此預覽前把「本機找不到」的 TrueType 樣式
 暫時換成 `CJK_FALLBACK_FILES` 裡第一個存在的字型（只改記憶體中的 doc，不回寫 DXF）。
-macOS 另把 Hiragino Sans GB 註冊進 matplotlib，family 以 ["Hiragino Sans GB", "DejaVu Sans"]
-fallback；Linux 找不到則略過。
+DXF 預設字型為 msjh.ttc（Windows 內建）：Windows 上不需替換，Mac / Linux 換成本機字型。
+matplotlib 另註冊 `cjk_font_paths()` 第一個存在的字型（macOS Hiragino / Windows 微軟正黑體 /
+Linux Noto CJK），family 以 [該字型, "DejaVu Sans"] fallback；都找不到則略過。
 """
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import ezdxf
@@ -18,6 +20,29 @@ from ezdxf.document import Drawing
 
 MAC_CJK_FONT = Path("/System/Library/Fonts/Hiragino Sans GB.ttc")
 MPL_FAMILY = ["Hiragino Sans GB", "DejaVu Sans"]
+# Windows 內建繁中字型（依序）：微軟正黑體、微軟正黑體 Light、細明體、標楷體
+WINDOWS_CJK_FILES = ("msjh.ttc", "msjhl.ttc", "mingliu.ttc", "kaiu.ttf")
+LINUX_CJK_PATHS = (
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",  # Debian / Ubuntu fonts-noto-cjk
+    "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc",  # Arch
+    "/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc",  # Fedora
+)
+
+
+def windows_font_dir() -> Path:
+    """Windows 字型資料夾：%WINDIR%\\Fonts（未設定時用 C:\\Windows）。"""
+    return Path(os.environ.get("WINDIR") or r"C:\Windows") / "Fonts"
+
+
+def cjk_font_paths() -> list[Path]:
+    """各平台 CJK 字型檔完整路徑候選（依序；呼叫端取第一個存在者）。"""
+    paths = [Path("/System/Library/Fonts/STHeiti Light.ttc"), MAC_CJK_FONT]
+    if os.name == "nt" or os.environ.get("WINDIR"):
+        paths += [windows_font_dir() / f for f in WINDOWS_CJK_FILES]
+    paths += [Path(p) for p in LINUX_CJK_PATHS]
+    return paths
+
+
 # ezdxf 依序取第一個本機存在者。macOS 先用 STHeiti Light：實測 ezdxf 以 Hiragino Sans GB
 # 繪「進」等字時，字形內部封閉輪廓被填成實心方塊（填色規則問題），STHeiti 無此問題。
 CJK_FALLBACK_FILES = (
@@ -25,7 +50,7 @@ CJK_FALLBACK_FILES = (
     "Hiragino Sans GB.ttc",  # macOS
     "NotoSansTC-Regular.ttf",
     "NotoSansCJK-Regular.ttc",  # Linux（fonts-noto-cjk）
-    "msjh.ttc",  # Windows 微軟正黑體
+    *WINDOWS_CJK_FILES,  # Windows 微軟正黑體 / 細明體 / 標楷體
 )
 
 
@@ -36,9 +61,16 @@ def _setup_matplotlib():
     from matplotlib import font_manager
     from matplotlib import pyplot as plt
 
-    if MAC_CJK_FONT.exists():
-        font_manager.fontManager.addfont(str(MAC_CJK_FONT))
-        plt.rcParams["font.family"] = MPL_FAMILY
+    for p in cjk_font_paths():
+        if p.name == "STHeiti Light.ttc" or not p.exists():
+            continue  # matplotlib 用 Hiragino（STHeiti 只給 ezdxf 繪字用）
+        try:
+            font_manager.fontManager.addfont(str(p))
+            family = font_manager.FontProperties(fname=str(p)).get_name()
+        except Exception:  # noqa: BLE001 - 字型檔損壞 / 無法解析時換下一個
+            continue
+        plt.rcParams["font.family"] = [family, "DejaVu Sans"]
+        break
     plt.rcParams["axes.unicode_minus"] = False
     return plt
 

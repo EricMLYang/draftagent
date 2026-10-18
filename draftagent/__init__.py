@@ -22,8 +22,13 @@ except PackageNotFoundError:  # 未安裝（直接從原始碼執行）
 
 # build 模組本身很輕（只 import pydantic / yaml / registry）。必須 eager import：
 # 子模組 draftagent.build 與函式 build 同名，eager 綁定才能保證 `from draftagent import build` 拿到函式。
+from draftagent._console import ensure_utf8_stdio
 from draftagent.build import BuildFailed, BuildResult, build, load_spec, verify_artifacts
 from draftagent.verify.base import VerifyResult
+
+# Windows cp950 console：讓 🟢🔴 / 中文輸出不 UnicodeEncodeError（其他平台 no-op）。
+# 放在套件層級，`python -m draftagent.verify.*` 與 tools/ 腳本也一併涵蓋。
+ensure_utf8_stdio()
 
 _LAZY: dict[str, str] = {
     # Spec 類別

@@ -311,7 +311,8 @@ def run_slope(spec: SlopeSpec) -> dict[str, Any]:
     out_gdf.to_file(out_path, layer=GPKG_LAYER, driver="GPKG")
 
     # --- 輸出 CSV
-    with open(spec.output_csv, "w", newline="", encoding="utf-8") as fh:
+    # 帶 BOM：Windows Excel 直接開中文不亂碼
+    with open(spec.output_csv, "w", newline="", encoding="utf-8-sig") as fh:
         w = csv.DictWriter(fh, fieldnames=CSV_FIELDS)
         w.writeheader()
         for r in rows:

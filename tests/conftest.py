@@ -2,7 +2,8 @@
 
 - `tmp_run_dir`：模仿 `runs/<timestamp>/` 的暫存輸出目錄
 - `has_cjk_font`：本機是否有 ezdxf / matplotlib 可用的中文字型
-- `visual` 標記的測試：Linux 找不到中文字型時自動 skip（CI 以 apt 裝 fonts-noto-cjk）
+- `visual` 標記的測試：Linux 找不到中文字型時自動 skip（CI 以 apt 裝 fonts-noto-cjk；
+  Windows 內建微軟正黑體 / 細明體 / 標楷體，macOS 內建 Hiragino / STHeiti）
 """
 
 from __future__ import annotations
@@ -21,16 +22,15 @@ def _detect_cjk_font() -> str | None:
     try:
         from ezdxf.fonts import fonts
 
-        from draftagent.render.preview import CJK_FALLBACK_FILES, MAC_CJK_FONT
+        from draftagent.render.preview import CJK_FALLBACK_FILES, cjk_font_paths
     except Exception:  # noqa: BLE001 - 任何 import 失敗都視為沒有字型
         return None
     fm = fonts.font_manager
     for name in CJK_FALLBACK_FILES:
         if fm.has_font(name):
             return name
-    if MAC_CJK_FONT.exists():
-        return MAC_CJK_FONT.name
-    return None
+    # 完整路徑候選：macOS / Windows（%WINDIR%\Fonts 的 msjh、mingliu、kaiu）/ Linux Noto CJK
+    return next((p.name for p in cjk_font_paths() if p.exists()), None)
 
 
 @pytest.fixture(scope="session")

@@ -35,7 +35,6 @@ spec 驗證失敗時 CLI 會列出「欄位路徑 + 錯誤 + 允許值 / 範圍�
 - **淹水潛勢圖**依法僅供防救災，**不得**作為土地使用管制或可建性的判定依據；只能列為風險提示
 - `render/`、`verify/` 內不得出現任何 LLM 呼叫
 - **不得把真實案件識別資訊寫進 repo**（案名、地號、案號、業主、建築師事務所、顧問公司名）。從私有專案資料萃取的知識要去識別化；fixture 一律用合成基地。提交前跑 `python scripts/check_no_client_ids.py`（CI 也會擋）
-- **不得把真實案件識別資訊寫進 repo**（案名、地號、案號、業主、建築師事務所、顧問公司名）。從私有專案資料萃取的知識要去識別化；fixture 一律用合成基地。提交前跑 `python scripts/check_no_client_ids.py`（CI 也會擋）
 
 ## 不要做的事
 
@@ -58,14 +57,12 @@ draftagent verify <kind> <spec> --artifacts runs/<…>/   # 對既有產物重�
 draftagent preview <file.dxf> -o out.png # DXF → PNG（只供人眼檢查）
 draftagent check                         # 環境自檢：套件、CJK 字型、pyswmm / ODA
 draftagent convert-dwg <arch.dwg>        # DWG → DXF：依作業系統挑本機轉檔工具（Windows 先 ODA；macOS / Linux 先 LibreDWG）；都沒有就提示安裝或請對方另存 DXF
-draftagent convert-dwg <arch.dwg>        # DWG → DXF：依作業系統挑本機轉檔工具（Windows 先 ODA；macOS / Linux 先 LibreDWG）；都沒有就提示安裝或請對方另存 DXF
-draftagent inspect-dxf <arch.dxf>        # 看懂建築師 DXF：單位、圖層、外牆候選、樓層（之後用 arch-import 圖種轉 TWD97）
-draftagent convert-dwg <arch.dwg>        # DWG → DXF：依作業系統挑本機轉檔工具（Windows 先 ODA；macOS / Linux 先 LibreDWG）；都沒有就提示安裝或請對方另存 DXF
-draftagent convert-dwg <arch.dwg>        # DWG → DXF：依作業系統挑本機轉檔工具（Windows 先 ODA；macOS / Linux 先 LibreDWG）；都沒有就提示安裝或請對方另存 DXF
 draftagent inspect-dxf <arch.dxf>        # 看懂建築師 DXF：單位、圖層、外牆候選、樓層（之後用 arch-import 圖種轉 TWD97）
 pytest                                   # verifier 單元測試
 python -m draftagent.verify.<name> ...   # 單一 verifier 仍可獨立執行
 ```
+
+Windows（PowerShell）：venv 執行檔在 `.venv\Scripts\`（`.venv\Scripts\activate` 後指令同上；不 activate 時用 `.venv\Scripts\draftagent.exe`、`.venv\Scripts\python.exe` 取代 `.venv/bin/…`）。
 
 所有指令都支援 `--json`；exit code 0 = 成功 / 全綠，1 = 紅燈 / 錯誤。`tools/*.py` 為向後相容的舊入口，新工作請用 `draftagent`。
 各圖種跑哪些 verifier、檢查什麼、已知限制見 `docs/VERIFIERS.md`；README 圖庫用 `python scripts/make_gallery.py` 重新產生。

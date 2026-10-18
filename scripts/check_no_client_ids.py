@@ -95,7 +95,7 @@ def _decode(path: Path) -> str | None:
     if path.suffix.lower() == ".dbf":
         # shapefile 屬性表：NUL 換空白後依 .cpg 解碼（真實地籍最常從這裡漏出去）
         cpg = path.with_suffix(".cpg")
-        enc = cpg.read_text().strip() if cpg.exists() else "utf-8"
+        enc = cpg.read_text(encoding="ascii", errors="replace").strip() if cpg.exists() else "utf-8"
         try:
             return data.replace(b"\x00", b" ").decode(enc, errors="ignore")
         except LookupError:

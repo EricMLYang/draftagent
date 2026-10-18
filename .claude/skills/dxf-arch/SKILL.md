@@ -21,7 +21,7 @@ renderer 以 `render/standards.apply_layers(doc, names)` 套用（同時設 `$LW
 `python -m draftagent.verify.standards_check <dxf>` 檢查使用中圖層都在表內（未知 → WARN）、
 線寬 / 線型與表一致（不一致 → ERROR）。命名採 **AIA/NCS 風格前綴，非台灣官方標準**；
 線寬是 **業界慣例（`kind: convention`），不是法規數值**。新增圖層先改 yaml，不要在 renderer 硬寫屬性。
-中文字一律 `standards.text_style(doc)`（樣式 `CJK`）；Windows 審查端可設 `DRAFTAGENT_CAD_FONT=msjh.ttc`。
+中文字一律 `standards.text_style(doc)`（樣式 `CJK`）；字型檔預設 `msjh.ttc`（微軟正黑體，Windows 內建），可設 `DRAFTAGENT_CAD_FONT` 覆寫。
 
 精簡表（完整欄位與說明見 yaml）：
 
@@ -201,7 +201,7 @@ TS=$(date +%Y%m%d-%H%M%S)-profile; mkdir -p runs/$TS   # spec 先存到 runs/$TS
 - 圖簽是 block `TTLB-<size>`，ATTRIB tag：PROJECT、TITLE、DWG_NO、SCALE、DATE、DESIGNER、CHECKER（X-TTLB 層）。
 - 外框（紙邊細線）、內框（粗線）、比例尺 bar（含「水平 1/200」等數值文字）、指北針 block `NORTH-ARROW` 在 X-FRAME 層。
   `north_arrow: null` 依圖別預設（縱斷面 = 不畫）。
-- 中文字用 TrueType 文字樣式 `CJK`（字型檔常數 `CJK_FONT = NotoSansTC-Regular.ttf`）。接收端沒有該字型時 CAD 自行替換；
+- 中文字用 TrueType 文字樣式 `CJK`（字型檔常數 `CJK_FONT = msjh.ttc`，微軟正黑體；`DRAFTAGENT_CAD_FONT` 可覆寫）。接收端沒有該字型時 CAD 自行替換；
   PNG 預覽（`render/preview.py`）會把本機找不到的字型換成 STHeiti Light / Hiragino Sans GB / Noto CJK / 微軟正黑體
   中第一個存在者（Hiragino 在 ezdxf 下「進」字會出現實心方塊，所以 macOS 先用 STHeiti）。
 - 預覽 PNG 一定要親自看：文字是否方塊、數字是否 ×100、表格帶是否對齊、標註是否壓線。

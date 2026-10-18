@@ -5,8 +5,9 @@
 - 附圖 19 滯洪演算成果圖（上：入流 / 出流；下：池水位 / 外水位；共用時間軸）
 
 輸入為 `hydro.outflow.compute` 的 result dict。兩種量綱不共用一軸（不畫雙 y 軸）。
-中文字型：macOS 依序註冊 STHeiti Light、Hiragino Sans GB，fallback DejaVu Sans；
-Linux 嘗試 Noto Sans CJK，找不到則改用英文標籤（略過中文）。
+中文字型：依 `render.preview.cjk_font_paths()` 註冊第一個存在者——macOS STHeiti Light /
+Hiragino Sans GB、Windows 微軟正黑體 / 細明體 / 標楷體、Linux Noto Sans CJK，fallback DejaVu Sans；
+都找不到則改用英文標籤（略過中文）。
 """
 
 from __future__ import annotations
@@ -16,13 +17,12 @@ import json
 from pathlib import Path
 from typing import Any
 
-CJK_FONT_FILES = (
-    "/System/Library/Fonts/STHeiti Light.ttc",
-    "/System/Library/Fonts/Hiragino Sans GB.ttc",
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
-    "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc",
-    "/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc",
-)
+
+def _cjk_font_files() -> list[str]:
+    """macOS STHeiti / Hiragino → Windows 微軟正黑體等（%WINDIR%\\Fonts）→ Linux Noto CJK。"""
+    from draftagent.render.preview import cjk_font_paths
+
+    return [str(p) for p in cjk_font_paths()]
 
 # 驗證過的類別色（依序取用，不循環）：藍、橘、青
 SERIES = ("#2a78d6", "#eb6834", "#1baf7a", "#eda100")
@@ -67,7 +67,7 @@ def _setup() -> tuple[Any, bool]:
     from matplotlib import pyplot as plt
 
     families: list[str] = []
-    for f in CJK_FONT_FILES:
+    for f in _cjk_font_files():
         if Path(f).exists():
             try:
                 font_manager.fontManager.addfont(f)

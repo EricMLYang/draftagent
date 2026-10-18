@@ -38,6 +38,7 @@ import yaml
 from pydantic import BaseModel, ValidationError
 
 from draftagent import registry
+from draftagent._paths import is_within
 from draftagent.errors import SpecLoadError
 from draftagent.registry import Kind
 from draftagent.verify.base import VerifyResult
@@ -60,7 +61,7 @@ def _rel(p: Path) -> str:
     p = Path(p)
     for base in (Path.cwd(), REPO_ROOT):
         try:
-            return str(p.resolve().relative_to(base.resolve()))
+            return p.resolve().relative_to(base.resolve()).as_posix()
         except ValueError:
             continue
     return str(p)
@@ -204,7 +205,7 @@ def load_spec(path: str | Path, kind: str | None = None) -> BaseModel:
         return _from_data(data, kind, p)
     if suffix == ".py":
         rp = p.resolve()
-        if not rp.is_relative_to(REPO_ROOT):
+        if not is_within(rp, REPO_ROOT):  # Windows：大小寫 / 磁碟代號不敏感
             raise SpecLoadError(f"{p}：.py spec 必須放在 repo 內（建議 {REPO_ROOT / 'work'}）")
         ns = runpy.run_path(str(rp), run_name="__draftagent_spec__")
         obj = ns.get("spec")
@@ -229,7 +230,8 @@ def _git() -> dict[str, Any]:
     def run(*args: str) -> str | None:
         try:
             r = subprocess.run(
-                ["git", *args], check=False, cwd=REPO_ROOT, capture_output=True, text=True, timeout=5
+                ["git", *args], check=False, cwd=REPO_ROOT, capture_output=True, text=True,
+                encoding="utf-8", errors="replace", timeout=5
             )
         except (OSError, subprocess.SubprocessError):
             return None

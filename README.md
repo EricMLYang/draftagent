@@ -4,7 +4,7 @@ Agent-operable CAD drafting for Taiwan land development, urban renewal, cadastra
 用 typed Python（或 JSON / YAML）寫 spec → `draftagent build` 一次完成產圖與全部 verifier，產物與 spec.json 自動存到 `runs/`。
 
 ```bash
-uv venv && uv pip install -e ".[dev]"     # 安裝後 .venv/bin/draftagent 可用
+uv venv && uv pip install -e ".[dev]"     # 安裝後 .venv/bin/draftagent 可用（Windows 見下方「Windows 安裝」）
 draftagent check                           # 環境自檢（套件、CJK 字型、選用相依）
 draftagent kinds                           # 有哪些圖種
 draftagent new plan -o work/plan.py        # 產生可執行的 Python 範例 spec，照需求修改
@@ -31,6 +31,28 @@ print(build(PlanSpec(wall_thickness=200, rooms=[Room(name="房間", rect=Rect(wi
 欄位查詢：`draftagent schema <kind>`。Agent 作業規則見 [CLAUDE.md](CLAUDE.md)，完整計畫見 [docs/PLAN.md](docs/PLAN.md)、開發方式見 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)。
 每個圖種跑哪些 verifier、檢查什麼與已知限制見 [docs/VERIFIERS.md](docs/VERIFIERS.md)；agent 評估方式見 [docs/EVAL.md](docs/EVAL.md)。
 綠燈只代表「通過本 repo 現有 verifier 的檢查項目」，不代表符合法規。
+
+## Windows 安裝
+
+同事端以 Windows（AutoCAD / BricsCAD）為主；以下在 PowerShell 執行：
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"   # 安裝 uv（裝完重開 PowerShell）
+uv venv
+.venv\Scripts\activate                         # 若被執行原則擋下：Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+uv pip install -e ".[dev,ifc,report]"
+draftagent check                               # 環境自檢
+draftagent kinds
+draftagent build examples\plan.json            # 產物在 runs\<ts>-plan-…\
+```
+
+- 不 activate 時，Mac / Linux 的 `.venv/bin/draftagent`、`.venv/bin/python` 對應 `.venv\Scripts\draftagent.exe`、`.venv\Scripts\python.exe`。
+- DXF 中文字型預設 `msjh.ttc`（微軟正黑體，Windows 內建），AutoCAD / BricsCAD 開圖即可顯示；要改用其他字型設環境變數
+  `$env:DRAFTAGENT_CAD_FONT = "NotoSansTC-Regular.ttf"`。
+- DWG 轉檔（`draftagent convert-dwg`）建議安裝 [ODA File Converter](https://www.opendesign.com/guestfiles/oda_file_converter)
+  （需同意其使用條款）；會自動在 `C:\Program Files\ODA\ODAFileConverter <版本>\` 找到。也可請建築師直接「另存 DXF」。
+- console 輸出（🟢🔴、中文）在 Windows 會自動切成 UTF-8；若在舊版 cmd 看到亂碼，先執行 `chcp 65001`。
+- git clone 時 `AGENTS.md` 是指向 `CLAUDE.md` 的 symlink；Windows 未開 `core.symlinks` 時它會變成只含檔名的文字檔，內容以 `CLAUDE.md` 為準。
 
 ## 評估結果
 

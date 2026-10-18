@@ -18,9 +18,10 @@ import signal
 import subprocess
 import time
 from dataclasses import dataclass, field
-from pathlib import Path
+from pathlib import Path, PurePath
 from typing import Any
 
+from draftagent._paths import is_windows
 from draftagent.eval.streamjson import RunStats, parse_codex_stream, parse_stream
 from draftagent.eval.tasks import Task
 from draftagent.eval.workspace import Workspace
@@ -84,21 +85,52 @@ def _run_streaming(
             stdout=out,
             stderr=err,
             text=True,
-            start_new_session=True,
+            encoding="utf-8",  # prompt（stdin）含中文；Windows 預設 cp950
+            errors="replace",
+            **_new_group_kwargs(),
         )
         try:
             proc.communicate(stdin_text, timeout=timeout)
             return proc.returncode, False, time.monotonic() - t0
         except subprocess.TimeoutExpired:
-            with contextlib.suppress(ProcessLookupError, PermissionError):
-                os.killpg(proc.pid, signal.SIGTERM)
+            _kill_group(proc, hard=False)
             try:
                 proc.wait(timeout=10)
             except subprocess.TimeoutExpired:
-                with contextlib.suppress(ProcessLookupError, PermissionError):
-                    os.killpg(proc.pid, signal.SIGKILL)
+                _kill_group(proc, hard=True)
                 proc.wait()
             return proc.returncode, True, time.monotonic() - t0
+
+
+def _new_group_kwargs() -> dict[str, Any]:
+    """子行程自成一個 process group，逾時才能整組砍掉（POSIX setsid；Windows 新 process group）。"""
+    if is_windows():
+        return {"creationflags": getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)}
+    return {"start_new_session": True}
+
+
+def _kill_group(proc: subprocess.Popen, *, hard: bool) -> None:
+    """POSIX：killpg SIGTERM / SIGKILL；Windows 沒有 killpg → `taskkill /T` 砍整棵行程樹。"""
+    if is_windows():
+        args = ["taskkill", "/T", "/PID", str(proc.pid)] + (["/F"] if hard else [])
+        with contextlib.suppress(OSError, subprocess.SubprocessError):
+            subprocess.run(args, capture_output=True, check=False, timeout=30)
+        if hard:
+            with contextlib.suppress(OSError):
+                proc.kill()
+        return
+    with contextlib.suppress(ProcessLookupError, PermissionError):
+        os.killpg(proc.pid, signal.SIGKILL if hard else signal.SIGTERM)
+
+
+def abs_rule_path(p: str | PurePath) -> str:
+    """Claude Code 權限規則的絕對路徑（`//` 之後的部分）：POSIX `/Users/x` → `Users/x`；
+    Windows `C:\\Users\\x` → `c/Users/x`（Claude Code 在 Windows 以 POSIX 形式比對路徑）。"""
+    pp = p if isinstance(p, PurePath) else Path(p)
+    posix, drive = pp.as_posix(), pp.drive
+    if drive and drive.endswith(":"):
+        return drive[0].lower() + posix[len(drive) :]
+    return posix.lstrip("/")
 
 
 # ---------------------------------------------------------------- claude
@@ -157,12 +189,18 @@ class ClaudeCodeRunner(Runner):
             # 第二輪評估 detail-ty-1 曾因此被拒絕執行 build，被誤判為「缺資料拒絕」。
             for exe in ("draftagent", "python", "pytest"):
                 bash.append(str(ws.root / ".venv" / "bin" / exe))
+                if is_windows():  # Windows venv：Scripts\\*.exe / 工作區 .cmd；Git Bash 的 POSIX 寫法
+                    scripts = ws.root / ".venv" / "Scripts"
+                    for f in (f"{exe}.exe", f"{exe}.cmd"):
+                        bash += [str(scripts / f), (scripts / f).as_posix()]
+        if is_windows():
+            bash += [f".venv/Scripts/{exe}" for exe in ("draftagent", "python", "pytest")]
         return ["Read", "Write", "Edit", "Glob", "Grep", *(f"Bash({b}:*)" for b in bash)]
 
     def disallowed_tools(self, ws: Workspace) -> list[str]:
         # 原 repo（含 expected/）不可讀寫；`//` 開頭 = 絕對路徑規則。
         # 規則用 `:*` 前綴語法（不含空白），才能安全地以逗號串成一個參數
-        src = str(ws.source).lstrip("/")
+        src = abs_rule_path(ws.source)
         return [f"{t}(//{src}/**)" for t in ("Read", "Edit", "Write")] + ["WebFetch", "WebSearch"]
 
     def command(self, ws: Workspace) -> list[str]:
@@ -323,7 +361,7 @@ class ReplayRunner(Runner):
             dst = ws.root / "work" / f"replay_spec{'' if i == 0 else f'-{i + 1}'}{src.suffix}"
             shutil.copy2(src, dst)
             cmd = [
-                str(ws.venv_bin / "draftagent"),
+                str(ws.exe("draftagent")),
                 "build",
                 str(dst.relative_to(ws.root)),
                 "--no-preview",

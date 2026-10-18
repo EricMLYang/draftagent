@@ -16,6 +16,22 @@ uv pip install -e ".[dev]"
 pytest
 ```
 
+Windows（PowerShell）：
+
+```powershell
+uv venv
+.venv\Scripts\activate
+uv pip install -e ".[dev,ifc,report]"
+pytest                                   # 或 .venv\Scripts\python.exe -m pytest
+```
+
+跨平台規則（CI 有 windows-latest，`tests/test_windows_compat.py` 會擋）：
+- 文字檔 `open()` / `read_text()` / `write_text()` 一律指定 `encoding`（Windows 預設 cp950）；給 Excel 開的 CSV 用 `utf-8-sig`
+- 子行程 `text=True` 時一併給 `encoding="utf-8", errors="replace"`
+- 路徑用 `pathlib`；寫進 JSON / 報表的相對路徑用 `.as_posix()`；判斷「在 repo 內」用 `draftagent._paths.is_within`
+- venv 執行檔用 `draftagent._paths.venv_bin(root, name)`（POSIX `.venv/bin/x`、Windows `.venv\Scripts\x.exe`）
+- 依賴 `sh` 腳本、`chmod`、SWMM 動態庫的測試以 `@pytest.mark.skipif(os.name == "nt", …)` 處理
+
 ## 1. 架構分層與模組職責
 
 ```

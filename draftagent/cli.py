@@ -18,6 +18,7 @@ import typer
 from pydantic import ValidationError
 
 from draftagent import registry
+from draftagent._console import ensure_utf8_stdio
 from draftagent.errors import SpecLoadError, format_validation_error, validation_details
 
 app = typer.Typer(
@@ -27,6 +28,14 @@ app = typer.Typer(
     add_completion=False,
     pretty_exceptions_enable=False,
 )
+
+
+@app.callback()
+def _root() -> None:
+    """DraftAgent：spec（Python / JSON / YAML）→ render → verify → runs/。"""
+    # 進入點是 `draftagent.cli:app`（不經 main）：在 callback 確保 Windows console 為 UTF-8
+    ensure_utf8_stdio()
+
 
 JsonOpt = Annotated[bool, typer.Option("--json", help="機器可讀 JSON 輸出")]
 
@@ -329,7 +338,7 @@ OPTIONAL_IMPORTS = (
 def _probe(code: str, timeout: float = 30.0) -> dict[str, Any]:
     try:
         r = subprocess.run([sys.executable, "-c", code], check=False, capture_output=True,
-                           text=True, timeout=timeout)
+                           text=True, encoding="utf-8", errors="replace", timeout=timeout)
     except subprocess.TimeoutExpired:
         return {"ok": False, "detail": f"import 超過 {timeout:g}s 未回應"}
     if r.returncode == 0:
@@ -444,6 +453,7 @@ def check(as_json: JsonOpt = False) -> None:
 
 
 def main() -> None:  # python -m draftagent.cli
+    ensure_utf8_stdio()
     app()
 
 

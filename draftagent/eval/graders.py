@@ -36,6 +36,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+from draftagent._paths import is_within
 from draftagent.eval.observed import Observed
 from draftagent.eval.streamjson import RunStats
 from draftagent.eval.tasks import AllowedChanges, Check, CrossCheck, ReplyCheck, Task
@@ -80,7 +81,7 @@ def _outputs_without_build(ws: Workspace) -> list[str]:
             continue
         for p in d.rglob("*"):
             if p.is_file() and (p.suffix.lower() in _OUTPUT_SUFFIXES or p.name in ("result.json", "calc.md")):
-                hits.append(str(p.relative_to(ws.root)))
+                hits.append(p.relative_to(ws.root).as_posix())
     return sorted(hits)
 
 
@@ -461,6 +462,14 @@ def integrity_flags(ws: Workspace, stats: RunStats | None) -> list[str]:
     return flags
 
 
+def _under(s: str, root: Path) -> bool:
+    """s 是 root 底下的絕對路徑（Windows 大小寫 / 分隔符不敏感）；非路徑字串回傳 False。"""
+    try:
+        return "\n" not in s and Path(s).is_absolute() and is_within(s, root)
+    except (OSError, ValueError):
+        return False
+
+
 def rebase_codes_paths(obj: Any, ws: Workspace) -> Any:
     """spec 裡指向**工作區** `draftagent/<pkg>/codes/*.yaml` 的絕對路徑 → 原 repo 的同一檔。
 
@@ -472,8 +481,8 @@ def rebase_codes_paths(obj: Any, ws: Workspace) -> Any:
         return {k: rebase_codes_paths(v, ws) for k, v in obj.items()}
     if isinstance(obj, list):
         return [rebase_codes_paths(v, ws) for v in obj]
-    if isinstance(obj, str) and obj.startswith(str(ws.root) + os.sep):
-        rel = Path(obj).relative_to(ws.root)
+    if isinstance(obj, str) and _under(obj, ws.root):
+        rel = Path(obj).resolve().relative_to(ws.root.resolve())
         if rel.parts[:1] == ("draftagent",) and "codes" in rel.parts[2:-1]:
             return str(ws.source / rel)
     return obj
@@ -582,7 +591,7 @@ def _conflict_grade(
         g.builds.append(
             {
                 "kind": man.get("kind"),
-                "run_dir": str(run_dir.relative_to(ws.root)),
+                "run_dir": run_dir.relative_to(ws.root).as_posix(),
                 "ok": rg.ok,
                 "agent_reported_ok": man.get("ok"),
             }
@@ -676,7 +685,7 @@ def grade(task: Task, ws: Workspace, out_dir: Path, stats: RunStats | None = Non
         g.builds.append(
             {
                 "kind": k,
-                "run_dir": str(run_dir.relative_to(ws.root)),
+                "run_dir": run_dir.relative_to(ws.root).as_posix(),
                 "ok": rg.ok,
                 "agent_reported_ok": man.get("ok"),
             }
@@ -691,7 +700,7 @@ def grade(task: Task, ws: Workspace, out_dir: Path, stats: RunStats | None = Non
                 }
             )
     main = regraded[primary]
-    g.run_dir = str(main.run_dir.relative_to(ws.root))
+    g.run_dir = main.run_dir.relative_to(ws.root).as_posix()
     g.kind = main.kind
     g.agent_reported_ok = main.manifest.get("ok")
 

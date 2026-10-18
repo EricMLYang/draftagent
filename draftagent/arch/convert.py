@@ -13,7 +13,10 @@
 
 from __future__ import annotations
 
+import glob
+import os
 import platform
+import re
 import shutil
 import subprocess
 import tempfile
@@ -25,6 +28,27 @@ ODA_CANDIDATES = {
     "Darwin": ["/Applications/ODAFileConverter.app/Contents/MacOS/ODAFileConverter"],
     "Linux": ["/usr/bin/ODAFileConverter", "/usr/local/bin/ODAFileConverter"],
 }
+# Windows：ODA 安裝在帶版本號的資料夾（例：C:\Program Files\ODA\ODAFileConverter 25.12.0\），
+# ezdxf 預設的 win_exec_path 只認不帶版本號的路徑，所以自己 glob
+ODA_WIN_GLOB = ("ODA", "ODAFileConverter*", "ODAFileConverter.exe")
+
+
+def _windows_oda_candidates() -> list[str]:
+    """Program Files / Program Files (x86) 下所有 ODAFileConverter*.exe；同一根目錄內新版在前。"""
+    roots = [
+        os.environ.get("ProgramFiles") or r"C:\Program Files",
+        os.environ.get("ProgramFiles(x86)") or r"C:\Program Files (x86)",
+    ]
+    hits: list[str] = []
+    for root in dict.fromkeys(roots):  # 去重、保序
+        hits += sorted(glob.glob(os.path.join(root, *ODA_WIN_GLOB)), key=_version_key, reverse=True)
+    return hits
+
+
+def _version_key(path: str) -> tuple[int, ...]:
+    """資料夾名稱裡的版本號（"ODAFileConverter 25.12.0" → (25, 12, 0)）；數字比較，9.x < 25.x。"""
+    folder = Path(path.replace("\\", "/")).parent.name
+    return tuple(int(n) for n in re.findall(r"\d+", folder))
 
 INSTALL_HINTS = {
     "Windows": [
@@ -80,6 +104,12 @@ def current_platform() -> str:
 
 
 def _detect_oda(system: str) -> Converter:
+    if system == "Windows":
+        # 先找帶版本號的安裝資料夾並告訴 ezdxf；否則 odafc.is_installed() 會因預設路徑不存在而失敗
+        for p in _windows_oda_candidates():
+            if Path(p).exists():
+                _set_oda_path(p, system)
+                return Converter("oda", True, p, "Program Files 偵測到")
     try:
         from ezdxf.addons import odafc
 
@@ -110,14 +140,19 @@ def detect(system: str | None = None) -> list[Converter]:
     return [found[n] for n in PREFERENCE[system]]
 
 
+def _set_oda_path(path: str, system: str) -> None:
+    """告訴 ezdxf odafc 執行檔位置（Windows → win_exec_path；其他 → unix_exec_path）。"""
+    import ezdxf
+
+    key = "win_exec_path" if system == "Windows" else "unix_exec_path"
+    ezdxf.options.set("odafc-addon", key, path)
+
+
 def _run_oda(conv: Converter, src: Path, out: Path, system: str) -> None:
     from ezdxf.addons import odafc
 
     if conv.path:  # 自訂位置：告訴 ezdxf 去哪找
-        import ezdxf
-
-        key = "win_exec_path" if system == "Windows" else "unix_exec_path"
-        ezdxf.options.set("odafc-addon", key, conv.path)
+        _set_oda_path(conv.path, system)
     odafc.convert(str(src), str(out), version="R2018", replace=True)
 
 
@@ -126,6 +161,8 @@ def _run_libredwg(conv: Converter, src: Path, out: Path, timeout: float) -> None
         [conv.path or "dwg2dxf", "-y", "-o", str(out), str(src)],
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         timeout=timeout,
         check=False,
     )

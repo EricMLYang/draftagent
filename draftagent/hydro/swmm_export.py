@@ -244,7 +244,8 @@ def run_swmm_subprocess(
     info: dict[str, Any] = {"ok": False, "returncode": None, "rpt": str(rpt), "out": str(out),
                             "errors": [], "message": ""}
     try:
-        cp = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_s)
+        cp = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8",
+                            errors="replace", timeout=timeout_s)
     except subprocess.TimeoutExpired:
         info["message"] = f"SWMM 子行程逾時（> {timeout_s} s）"
         return info
@@ -256,8 +257,8 @@ def run_swmm_subprocess(
         )
         return info
     if rpt.exists():
-        info["errors"] = [ln.strip() for ln in rpt.read_text(errors="replace").splitlines()
-                          if "ERROR" in ln.upper()]
+        rpt_text = rpt.read_text(encoding="utf-8", errors="replace")
+        info["errors"] = [ln.strip() for ln in rpt_text.splitlines() if "ERROR" in ln.upper()]
     if cp.returncode != 0 or info["errors"]:
         info["message"] = f"SWMM 執行失敗 rc={cp.returncode}；{info['errors'][:5]}；{cp.stderr[-500:]}"
         return info

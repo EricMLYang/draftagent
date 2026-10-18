@@ -37,7 +37,7 @@ def render(spec: DrainageReportSpec, out_dir: Path) -> dict[str, Path]:
     meta["warnings"] = content.warnings + meta["warnings"]
     meta["figures"] = [
         {
-            "path": str(f.path.relative_to(out)),
+            "path": f.path.relative_to(out).as_posix(),
             "sheet": f.sheet_name,
             "dwg_no": f.dwg_no,
             "scale": f.scale,

@@ -23,6 +23,10 @@ venv：不重新安裝。工作區 `.venv/` 是一個「覆蓋式」venv（約 1
 依序列出「工作區根目錄」與「原 venv 的 site-packages」。原 venv 的 editable `.pth`
 不會被處理（.pth 只在 site-packages 本身被處理），所以 `import draftagent` 一定拿到
 **工作區**的程式碼，`draftagent build` 的 runs/ 也寫在工作區。
+
+Windows：執行檔資料夾是 `Scripts`、site-packages 在 `Lib/site-packages`；不建 symlink（需系統
+管理員權限），改複製原 venv 的 `python.exe`（venv launcher，讀同層上一層的 pyvenv.cfg），
+`draftagent` / `pytest` 以 `.cmd` 轉呼 `python.exe -m …`。用 `Workspace.exe(name)` 取執行檔路徑。
 """
 
 from __future__ import annotations
@@ -34,7 +38,9 @@ import stat
 import sys
 import tempfile
 from dataclasses import dataclass, field
-from pathlib import Path
+from pathlib import Path, PurePosixPath
+
+from draftagent._paths import is_windows, venv_bin_dir
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -84,6 +90,11 @@ import pytest
 if __name__ == "__main__":
     sys.exit(pytest.console_main())
 """
+# Windows：.cmd 轉呼工作區 python.exe（%~dp0 = .cmd 所在資料夾）
+_WIN_CMD = {
+    "draftagent": '@"%~dp0python.exe" -m draftagent.cli %*\r\n',
+    "pytest": '@"%~dp0python.exe" -m pytest %*\r\n',
+}
 
 
 @dataclass
@@ -95,7 +106,14 @@ class Workspace:
 
     @property
     def venv_bin(self) -> Path:
-        return self.root / ".venv" / "bin"
+        """工作區 venv 的執行檔資料夾（POSIX `bin/`、Windows `Scripts\\`）。"""
+        return venv_bin_dir(self.root / ".venv")
+
+    def exe(self, name: str) -> Path:
+        """工作區 venv 內可直接執行的檔案：POSIX `bin/<name>`；Windows `python.exe` 或 `<name>.cmd`。"""
+        if not is_windows():
+            return self.venv_bin / name
+        return self.venv_bin / ("python.exe" if name in ("python", "python3") else f"{name}.cmd")
 
     @property
     def runs(self) -> Path:
@@ -133,7 +151,7 @@ class Workspace:
 
 def is_protected(rel: str) -> bool:
     """draftagent/verify/ 底下，或 draftagent/ 任一層 codes/ 底下（法規 yaml）。"""
-    parts = rel.split("/")
+    parts = list(PurePosixPath(rel.replace("\\", "/")).parts)
     return parts[0] == "draftagent" and (parts[1:2] == ["verify"] or "codes" in parts[1:-1])
 
 
@@ -152,6 +170,9 @@ def _ignore(_dir: str, names: list[str]) -> set[str]:
 
 
 def _make_venv(root: Path, source_venv: Path) -> None:
+    if is_windows():
+        _make_venv_windows(root, source_venv)
+        return
     site = _site_packages(source_venv)
     base = Path(sys.base_prefix)
     py = source_venv / "bin" / "python"
@@ -178,7 +199,37 @@ def _make_venv(root: Path, source_venv: Path) -> None:
         p.chmod(p.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 
+def _make_venv_windows(root: Path, source_venv: Path) -> None:
+    site = _site_packages(source_venv)
+    venv = root / ".venv"
+    scripts = venv_bin_dir(venv, windows=True)
+    rel_site = site.relative_to(source_venv)
+    (venv / rel_site).mkdir(parents=True)
+    scripts.mkdir(parents=True, exist_ok=True)
+    cfg = source_venv / "pyvenv.cfg"
+    if cfg.exists():
+        shutil.copy2(cfg, venv / "pyvenv.cfg")
+    else:
+        (venv / "pyvenv.cfg").write_text(
+            f"home = {Path(sys.base_prefix)}\ninclude-system-site-packages = false\n",
+            encoding="utf-8",
+        )
+    src_scripts = venv_bin_dir(source_venv, windows=True)
+    for exe in ("python.exe", "pythonw.exe"):
+        if (src_scripts / exe).exists():
+            shutil.copy2(src_scripts / exe, scripts / exe)
+    if not (scripts / "python.exe").exists():
+        raise FileNotFoundError(f"{src_scripts} 找不到 python.exe；先 `uv venv && uv pip install -e .`")
+    (venv / rel_site / "_draftagent_eval.pth").write_text(f"{root}\n{site}\n", encoding="utf-8")
+    for name, body in _WIN_CMD.items():
+        (scripts / f"{name}.cmd").write_text(body, encoding="utf-8", newline="")
+
+
 def _site_packages(venv: Path) -> Path:
+    if is_windows():
+        win_site = venv / "Lib" / "site-packages"
+        if win_site.is_dir():
+            return win_site
     hits = sorted((venv / "lib").glob("python3*/site-packages"))
     if not hits:
         raise FileNotFoundError(f"{venv} 找不到 site-packages；先 `uv venv && uv pip install -e .`")

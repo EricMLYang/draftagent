@@ -7,8 +7,9 @@
 - `apply_layers(doc, names)`：依 yaml 建立 / 更新圖層的 color、linetype、lineweight、plot，
   缺少的自訂線型（DA-*）一併建立，並設 `$LWDISPLAY = 1` 讓 CAD 顯示線寬。
 - `text_style(doc)`：建立 / 更新統一的 CJK TrueType 文字樣式。字型檔預設
-  `DEFAULT_CJK_FONT`（Noto Sans TC，維持既有作法）；Windows 審查端可設環境變數
-  `DRAFTAGENT_CAD_FONT=msjh.ttc`（`WINDOWS_CJK_FONT`，微軟正黑體）覆寫。
+  `DEFAULT_CJK_FONT` = `msjh.ttc`（微軟正黑體，Windows 內建；審查端以 Windows AutoCAD / BricsCAD
+  為主，開圖即有字型）。可用環境變數 `DRAFTAGENT_CAD_FONT` 覆寫（例如 `NotoSansTC-Regular.ttf`）。
+  Mac / Linux 的 PNG 預覽會由 `render/preview.substitute_missing_fonts` 換成本機 CJK 字型（不回寫 DXF）。
 """
 
 from __future__ import annotations
@@ -26,8 +27,9 @@ from ezdxf.lldxf.const import VALID_DXF_LINEWEIGHTS
 LAYERS_YAML = Path(__file__).resolve().parent / "codes" / "layers.yaml"
 
 CJK_STYLE = "CJK"
-DEFAULT_CJK_FONT = "NotoSansTC-Regular.ttf"  # Noto Sans TC（SIL OFL）；跨平台開源 CJK 字型
 WINDOWS_CJK_FONT = "msjh.ttc"  # 微軟正黑體（Windows 內建）
+NOTO_CJK_FONT = "NotoSansTC-Regular.ttf"  # Noto Sans TC（SIL OFL）；跨平台開源，可用環境變數改用
+DEFAULT_CJK_FONT = WINDOWS_CJK_FONT  # 同事以 Windows CAD 為主
 FONT_ENV = "DRAFTAGENT_CAD_FONT"
 
 DISCIPLINES = ("A", "C", "H", "S", "X")
@@ -176,6 +178,7 @@ __all__ = [
     "DEFAULT_CJK_FONT",
     "FONT_ENV",
     "LAYERS_YAML",
+    "NOTO_CJK_FONT",
     "WINDOWS_CJK_FONT",
     "LayerStd",
     "Standards",
