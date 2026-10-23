@@ -18,6 +18,7 @@ dependencies = [
   "pint>=0.23",         # 帶單位數值，擋 m/mm、ha/m² 混用
   "matplotlib>=3.8",    # DXF → PNG/PDF 預覽（ezdxf drawing addon）
   "typer>=0.12",        # 統一 CLI：draftagent build / verify / preview
+  "certifi>=2026.10.19",  # pyproj/rasterio 下載用的 CA bundle；移除 eMudhra 遭破解的 emSign ECC Root CA - G3
 ]
 
 [project.optional-dependencies]
